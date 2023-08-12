@@ -26,10 +26,9 @@ model Organization {
 }
 
 model User {
-  id            Int                  @id @default(autoincrement())
+  email         String               @id
   // ethAddress Bytes @unique // whatever the user chooses in client
-  login         String               @unique
-  passwordHash  String
+  passwordHash  String // FIXME: Remove?
   organizations OrganizationsUsers[]
 }
 
@@ -37,13 +36,13 @@ model User {
 model OrganizationsUsers {
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
-  user           User         @relation(fields: [userId], references: [id])
-  userId         Int
+  user           User         @relation(fields: [userEmail], references: [email])
+  userEmail      String
   assignedAt     DateTime     @default(now())
 
-  @@id([organizationId, userId])
+  @@id([organizationId, userEmail])
   @@index([organizationId])
-  @@index([userId])
+  @@index([userEmail])
 }
 
 // Only non-retired tokens
