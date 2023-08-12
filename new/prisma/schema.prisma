@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id                          Int                           @id @default(autoincrement())
+  name                        String
+  colonyNickName              String
+  colonyAddress               Bytes
+  tokenAddress                Bytes
+  tokenAuthorityAddress       Bytes
+  users                       OrganizationsUsers[]
+  tokens                      OrganizationsTokens[]
+  CreateNewTokenTransaction   CreateNewTokenTransaction[]
+  AddExistingTokenTransaction AddExistingTokenTransaction[]
+
+  @@index([colonyNickName])
+}
+
+model User {
+  id            Int                  @id @default(autoincrement())
+  // ethAddress Bytes @unique // whatever the user chooses in client
+  login         String               @unique
+  passwordHash  String
+  organizations OrganizationsUsers[]
+}
+
+// A user can join an organization without asking for permission.
+model OrganizationsUsers {
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int
+  assignedAt     DateTime     @default(now())
+
+  @@id([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+}
+
+// Only non-retired tokens
+model Token {
+  id            Int                   @id
+  organizations OrganizationsTokens[]
+  childs        ChildToken[]          @relation("child")
+  parents       ChildToken[]          @relation("parent")
+}
+
+model OrganizationsTokens {
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  token          Token        @relation(fields: [tokenId], references: [id])
+  tokenId        Int
+  assignedAt     DateTime     @default(now())
+  comment        String
+
+  @@id([organizationId, tokenId])
+  @@index([organizationId])
+  @@index([tokenId])
+}
+
+model ChildToken {
+  parent   Token @relation("parent", fields: [parentId], references: [id])
+  parentId Int
+  child    Token @relation("child", fields: [childId], references: [id])
+  childId  Int
+
+  @@id([parentId, childId])
+  @@index([parentId])
+  @@index([childId])
+}
+
+model Transaction {
+  id   Int   @id @default(autoincrement())
+  tx   Bytes @unique
+  kind Int
+
+  createNewToken              CreateNewTokenTransaction?    @relation
+  AddExistingTokenTransaction AddExistingTokenTransaction[]
+}
+
+model CreateNewTokenTransaction {
+  id             Int          @id
+  transaction    Transaction  @relation(fields: [id], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+}
+
+model AddExistingTokenTransaction {
+  id             Int          @id
+  transaction    Transaction  @relation(fields: [id], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  tokenId        BigInt
+  }

@@ -1,0 +1,7 @@
+node_modules
+
+# Keep config out of version control
+.env
+frontend/src/config.json
+
+backend/prisma/dev.db
