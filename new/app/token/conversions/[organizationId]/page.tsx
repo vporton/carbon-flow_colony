@@ -7,7 +7,7 @@ export default async function Conversions(props: {}) {
 
     const router = useRouter()
 
-    const { organizationId0 } = router.query;
+    const organizationId0 = router.query.organizationId;
 
     let organizationId = parseInt(organizationId0 as string);
     const prisma = new PrismaClient();
