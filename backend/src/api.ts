@@ -7,32 +7,6 @@ import { ethAddressToBuffer } from '../../new/util/eth';
 export function initApi(app: express.Application, prisma: PrismaClient) {
   initUserApi(app, prisma);
 
-  app.post('/create-organization', async (req, res, next) => {
-    try {
-      const data: {
-        name: string,
-        colonyNickName: string,
-        colonyAddress: Buffer,
-        tokenAddress: Buffer,
-        tokenAuthorityAddress: Buffer,
-      } = {
-        name: req.body.name,
-        colonyNickName: req.body.colonyNickName,
-        colonyAddress: ethAddressToBuffer(req.body.colonyAddress),
-        tokenAddress: ethAddressToBuffer(req.body.tokenAddress),
-        tokenAuthorityAddress: ethAddressToBuffer(req.body.tokenAuthorityAddress),
-      };
-      const { id } = await prisma.organization.create({data});
-
-      const userId = (req.session as any).userId;
-      await prisma.organizationsUsers.create({data: {userId: userId, organizationId: id}});
-
-      res.send({});
-    } catch (e) {
-      next(e);
-    }
-  });
-
   app.get('/organization/:id', async (req, res, next) => {
     try {
       let id = +req.params.id;
@@ -61,22 +35,6 @@ export function initApi(app: express.Application, prisma: PrismaClient) {
 
   app.get('/tokens-with-childs/:organization', async (req, res, next) => {
     try {
-      let organizationId = parseInt(req.params.organization);
-      let r = await prisma.token.findMany({
-        select: {
-          childs: {
-            select: {
-              child: {
-                select: {
-                  id: true,
-                  organizations: {select: {comment: true}, where: {organizationId}},
-                },
-              },
-            },
-          },
-          organizations: {select: {comment: true}, where: {organizationId}},
-        },
-      });
       res.send(r);
     } catch (e) {
       next(e);
