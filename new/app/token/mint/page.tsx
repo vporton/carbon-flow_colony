@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 
-import config from "../config.json";
-import EthAmount from "./EthAmount";
+import EthAmount from "@/components/EthAmount";
 import { Button } from "@mui/material";
+import { PrismaClient } from "@prisma/client";
+import { useRouter } from "next/router";
 
-export default function Mint(props: {}) {
-    const [tokens, setTokens] = useState<{id: number, comment: string}[]>([]);
+export default async function Mint(props: {}) {
+    const router = useRouter();
+
+    const organizationId0 = router.query.organizationId;
+    const organizationId = parseInt(organizationId0 as string);
+
     const [token, setToken] = useState<bigint | undefined>(undefined);
     const [amount, setAmount] = useState<bigint | undefined>(undefined);
 
-    async function fetchTokens() {
-        let res = await fetch(config.BACKEND + "/organization-tokens");
-        setTokens(res as any);
-    }
-
-    useEffect(() => {
-        fetchTokens().then(() => {});
+    const prisma = new PrismaClient();
+    const tokens0 = await prisma.organizationsTokens.findMany({
+        select: {token: { select: { id: true } }, comment: true},
+        where: { organizationId },
     });
+    const tokens = tokens0.map(t => { return {id: t.token.id, comment: t.comment} });
 
     function mint() {
         // TODO

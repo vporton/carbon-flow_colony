@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { formatEther, parseEther } from "viem";
 
 export default function EthAmount(props: {value?: bigint, onChange?: (v: bigint) => void}) {
