@@ -21,6 +21,7 @@ model Organization {
   tokens                      OrganizationsTokens[]
   CreateNewTokenTransaction   CreateNewTokenTransaction[]
   AddExistingTokenTransaction AddExistingTokenTransaction[]
+  ChildToken                  ChildToken[]
 
   @@index([colonyNickName])
 }
@@ -67,14 +68,17 @@ model OrganizationsTokens {
 }
 
 model ChildToken {
-  parent   Token @relation("parent", fields: [parentId], references: [id])
-  parentId Int
-  child    Token @relation("child", fields: [childId], references: [id])
-  childId  Int
+  parent         Token        @relation("parent", fields: [parentId], references: [id])
+  parentId       Int
+  child          Token        @relation("child", fields: [childId], references: [id])
+  childId        Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
 
-  @@id([parentId, childId])
+  @@id([parentId, childId, organizationId])
   @@index([parentId])
   @@index([childId])
+  @@index([organizationId, parentId])
 }
 
 model Transaction {
