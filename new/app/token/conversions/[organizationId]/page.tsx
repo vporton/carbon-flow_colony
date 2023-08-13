@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { PrismaClient } from "@prisma/client";
 
 export default async function Conversions(props: {}) {
-    type ParentToken = {id: number, comment: string, childs: {id: number, comment: string}[]};
+    type ParentToken = {id: number, comment: string, childs: {tokenId: number, comment: string}[]};
 
     const router = useRouter()
 
@@ -11,31 +11,31 @@ export default async function Conversions(props: {}) {
 
     let organizationId = parseInt(organizationId0 as string);
     const prisma = new PrismaClient();
-    let r: ParentToken = await prisma.token.findMany({
+    let r = await prisma.token.findMany({
       select: {
+        id: true,
         childs: {
-          select: {
-            child: {
-              select: {
-                id: true,
-                organizations: {select: {organizationId: true, comment: true}, where: {organizationId}},
-              },
+            select: {
+                organization: { select: { tokens: { select: {tokenId: true, comment: true}, where: {organizationId}} } },
             },
-          },
+            where: {organizationId},
         },
-        organizations: {select: {organizationId: true, comment: true}, where: {organizationId}},
+        organizations: {select: {comment: true}, where: {organizationId}},
       },
+    });
+    let ourTokens: ParentToken[] = r.map(t => {
+        return {id: t.id, comment: t.organizations[0].comment, childs: t.childs.map(t2 => t2.organization.tokens[0])};
     });
 
     return (
         <ul>
-            {r.map(parent =>
+            {ourTokens.map(parent =>
                 <li>
                     Token {parent.id} {parent.comment !== undefined ? `(${parent.comment})` : ""}
                     <ul>
                         {parent.childs.map(child =>
                             <li>
-                                <a href={`conversion/${child.id}`}>Token {child.id} {child.comment !== undefined ? `(${child.comment})` : ""}</a>
+                                <a href={`conversion/${child.tokenId}`}>Token {child.tokenId} {child.comment !== undefined ? `(${child.comment})` : ""}</a>
                                 <Button>Reset and remove child</Button>
                             </li>
                         )}
