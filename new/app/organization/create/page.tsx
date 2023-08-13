@@ -1,13 +1,11 @@
+'use client'
+
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { ColonyNetwork } from '@colony/sdk';
-import { useWalletClient } from 'wagmi';
-
-import config from "../config.json";
-import { useNavigate } from "react-router-dom";
+// import { useWalletClient } from 'wagmi';
 
 export default function CreateOrganization(props: {}) {
-    const navigate = useNavigate();
     const { data: signer } = useWalletClient();
     // useProvider()
 
