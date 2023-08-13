@@ -75,10 +75,9 @@ model ChildToken {
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
 
-  @@id([parentId, childId, organizationId])
+  @@id([organizationId, parentId, childId])
   @@index([parentId])
   @@index([childId])
-  @@index([organizationId, parentId])
 }
 
 model Transaction {
