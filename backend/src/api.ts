@@ -32,13 +32,4 @@ export function initApi(app: express.Application, prisma: PrismaClient) {
       next(e);
     }
   });
-
-  app.get('/tokens-with-childs/:organization', async (req, res, next) => {
-    try {
-      res.send(r);
-    } catch (e) {
-      next(e);
-    }
-  });
-
 }
