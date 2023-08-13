@@ -30,13 +30,14 @@ watchSigner({}, async (signer) => {
   colonyContextObj.colonyNetwork = new ColonyNetwork(signer)
 })
 
-export default function SubLayout({ children }: { children: any }) { // TODO: type
+export default function SubLayout({ children, pageProps }: { children: any, pageProps: any }) { // TODO: type // FIXME: Pass `pageProps` here.
+  console.log("ZZZ", pageProps);
   return (
     <WagmiConfig client={client}>
       <Connect/>
-      <ColonyContext.Provider value={colonyContextObj}>
+      <ColonyContext.Provider value={colonyContextObj} {...pageProps}>
         {children}
       </ColonyContext.Provider>
     </WagmiConfig>
-  )
+  );
 }

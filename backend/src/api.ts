@@ -7,29 +7,6 @@ import { ethAddressToBuffer } from '../../new/util/eth';
 export function initApi(app: express.Application, prisma: PrismaClient) {
   initUserApi(app, prisma);
 
-  app.get('/organization', async (req, res, next) => {
-    try {
-      const prefix: string = req.body.prefix ?? "";
-      const maxValues: number =  req.body.max ?? 50; // limit against DoS attacks.
-      const organizations = await prisma.organization.findMany(
-        {select: {id: true, name: true}, where: {name: {startsWith: prefix}}, take: maxValues});
-      res.send(organizations);
-    } catch (e) {
-      next(e);
-    }
-  });
-  
-  app.post('/join-organizations', async (req, res, next) => {
-    try {
-      const userId = (req.session as any).userId;
-      const orgId: number = req.body.organizationId;
-      await prisma.organizationsUsers.create({data: {userId: userId, organizationId: orgId}});
-      res.send({});
-    } catch (e) {
-      next(e);
-    }
-  });
-
   app.post('/create-organization', async (req, res, next) => {
     try {
       const data: {

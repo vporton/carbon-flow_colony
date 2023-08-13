@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import config from "@/config.json";
 
 const handler = NextAuth({
     providers: [
         GoogleProvider({
-          clientId: process.env.GOOGLE_ID!,
-          clientSecret: process.env.GOOGLE_SECRET!,
+          clientId: config.GOOGLE_ID!,
+          clientSecret: config.GOOGLE_SECRET!,
         }),
         // TODO: add more providers here
     ],

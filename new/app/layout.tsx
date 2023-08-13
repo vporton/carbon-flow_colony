@@ -10,22 +10,26 @@ import Link from 'next/link';
 import 'bootstrap/dist/css/bootstrap.css';
 import SubLayout from './_sublayout';
 import './globals.css';
+import { getSession } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] }) // TODO
 
-export const metadata: Metadata = {
-  title: 'Carbon Flow carbon accounting DAO',
-  description: 'An app to account carbon',
-}
+// FIXME
+// export const metadata: Metadata = {
+//   title: 'Carbon Flow carbon accounting DAO',
+//   description: 'An app to account carbon',
+// }
 
 export default async function RootLayout({
   children,
+  pageProps,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
+  pageProps: any, // TODO: type // FIXME: They are no passed here.
 }) {
-  // TODO
-  const userId = null;
-  const userName = null;
+  console.log("YYY", pageProps)
+  const session = await getSession();
+  const userEmail = session?.user?.email;
 
   function Logout(props: {refreshUser: () => void}) {
     async function doLogout() {
@@ -54,14 +58,14 @@ export default async function RootLayout({
         <div className="App">
           <Container>
             <h1>Carbon Flow carbon accounting DAO</h1>
-            <p>Username: {userName !== null ? (<>{userName} ({/*<Logout refreshUser={refreshUser}/>*/})</>) : "(none)"}</p>
+            <p>Username: {userEmail !== null ? (<>{userEmail} ({/*<Logout refreshUser={refreshUser}/>*/})</>) : "(none)"}</p>
             <List style={{ display: 'flex', flexDirection: 'row', padding: 0 }}>
               {/* TODO: Clicking outside item does not open the link. */}
               <ListItem><Link href="/login" className="nav-link">Login</Link></ListItem>
               <ListItem><Link href="/register" className="nav-link">Register</Link></ListItem>
               <ListItem><Link href="/organization" className="nav-link">Organizations</Link></ListItem>
             </List>
-            <SubLayout>{children}</SubLayout>
+            <SubLayout {...pageProps}>{children}</SubLayout>
           </Container>
         </div>
       </body>
