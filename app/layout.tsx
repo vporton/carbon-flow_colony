@@ -58,7 +58,6 @@ export default async function RootLayout({
             <List style={{ display: 'flex', flexDirection: 'row', padding: 0 }}>
               {/* TODO: Clicking outside item does not open the link. */}
               <ListItem><Link href="/login" className="nav-link">Login</Link></ListItem>
-              <ListItem><Link href="/register" className="nav-link">Register</Link></ListItem>
               <ListItem><Link href="/" className="nav-link">Organizations</Link></ListItem>
             </List>
             <SubLayout>{children}</SubLayout>
