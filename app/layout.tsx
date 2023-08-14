@@ -52,6 +52,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <meta charSet='utf-8'/>
+        <title>Carbon Flow carbon accounting DAO</title>
+        <link rel='stylesheet' href='/main.css'/>
+      </head>
       <body className={inter.className}>
         <div className="App">
           <Container>
