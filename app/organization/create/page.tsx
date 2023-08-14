@@ -2,12 +2,12 @@
 
 import { Button } from "@mui/material";
 import { useState } from "react";
-import { ColonyNetwork } from '@colony/sdk';
-import { useSigner } from "wagmi";
+import { ColonyNetwork, SignerOrProvider } from '@colony/sdk';
+import { useWalletClient } from "wagmi";
 // import { useWalletClient } from 'wagmi';
 
 export default function CreateOrganization(props: {}) {
-    const { data: signer } = useSigner();
+    const { data: signer } = useWalletClient();
     // useProvider()
 
     const [colonyName, setColonyName] = useState("");
@@ -18,7 +18,7 @@ export default function CreateOrganization(props: {}) {
     function create() {
         async function doIt() {
             // FIXME: Uncomment:
-            // const colonyNetwork = await ColonyNetwork.init(signer as any); // FIXME
+            const colonyNetwork = new ColonyNetwork(signer as unknown as SignerOrProvider); // FIXME
 
             // const [{ colonyAddress, tokenAddress, tokenAuthorityAddress }] = await colonyNetwork
             //     .createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName)
