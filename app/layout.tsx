@@ -10,7 +10,7 @@ import Link from 'next/link';
 import 'bootstrap/dist/css/bootstrap.css';
 import SubLayout from './_sublayout';
 import './globals.css';
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 
 const inter = Inter({ subsets: ['latin'] }) // TODO
 
@@ -24,9 +24,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode,
 }) {
-  const session = await getSession();
+  const session = await getServerSession();
   // const userEmail = session?.user?.email;
 
+  // TODO
   function Logout(props: {refreshUser: () => void}) {
     async function doLogout() {
       const response = await fetch(config.BACKEND + "/logout", {
