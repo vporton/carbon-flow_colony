@@ -11,3 +11,4 @@ h2 {
 }
 
 button, :link, :visited { color: blue !important }
+button:disabled { color: gray !important }
