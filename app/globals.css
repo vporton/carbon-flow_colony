@@ -9,3 +9,5 @@ h1 {
 h2 {
   font-size: 150%;
 }
+
+button, :link, :visited { color: blue }
