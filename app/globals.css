@@ -12,3 +12,5 @@ h2 {
 
 button, :link, :visited { color: blue !important }
 button:disabled { color: gray !important }
+
+input { border: 1px solid gray; }
