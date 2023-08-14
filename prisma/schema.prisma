@@ -29,7 +29,6 @@ model Organization {
 model User {
   email         String               @id
   // ethAddress Bytes @unique // whatever the user chooses in client
-  passwordHash  String // FIXME: Remove?
   organizations OrganizationsUsers[]
 }
 
