@@ -4,12 +4,14 @@ import '@/app/globals.css'
 import { createPublicClient, http } from 'viem'
 import { gnosis } from '@wagmi/chains'
 import type { AppProps } from 'next/app'
-import { createContext } from 'react'
+import { createContext, useState } from 'react'
 import { WagmiConfig, createClient } from 'wagmi'
 import { watchSigner } from '@wagmi/core'
 import { getDefaultProvider } from 'ethers'
 import { ColonyNetwork } from '@colony/sdk';
 import Connect from '@/components/Connect'
+import { SessionProvider, getSession, useSession } from 'next-auth/react'
+import { Session } from 'next-auth'
 
 const client = createClient({
   // FIXME: how to do autoConnect?
@@ -30,14 +32,19 @@ watchSigner({}, async (signer) => {
   colonyContextObj.colonyNetwork = new ColonyNetwork(signer)
 })
 
-export default function SubLayout({ children, pageProps }: { children: any, pageProps: any }) { // TODO: type // FIXME: Pass `pageProps` here.
-  console.log("ZZZ", pageProps);
+export default function SubLayout({ children }: { children: any }) { // TODO: type
+  const [session, setSession] = useState<Session | undefined>();
+  getSession().then(s => setSession(s!));
+
   return (
     <WagmiConfig client={client}>
       <Connect/>
-      <ColonyContext.Provider value={colonyContextObj} {...pageProps}>
-        {children}
-      </ColonyContext.Provider>
+      <SessionProvider session={session}>
+        <p>Username: {session?.user?.email !== null ? (<>{session?.user?.email} ({/*<Logout refreshUser={refreshUser}/>*/})</>) : "(none)"}</p>
+        <ColonyContext.Provider value={colonyContextObj}>
+          {children}
+        </ColonyContext.Provider>
+      </SessionProvider>
     </WagmiConfig>
   );
 }

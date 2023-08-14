@@ -1,6 +1,6 @@
 import React from 'react';
 
-import config from '../config.json'
+import config from '@/config.json'
 import { OrganizeImportsMode } from 'typescript';
 import { Container, List, ListItem } from "@mui/material";
 
@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import SubLayout from './_sublayout';
 import './globals.css';
 import { getSession } from 'next-auth/react';
+import { SessionProvider } from "next-auth/react"
 
 const inter = Inter({ subsets: ['latin'] }) // TODO
 
@@ -22,12 +23,9 @@ const inter = Inter({ subsets: ['latin'] }) // TODO
 
 export default async function RootLayout({
   children,
-  pageProps,
 }: {
   children: React.ReactNode,
-  pageProps: any, // TODO: type // FIXME: They are no passed here.
 }) {
-  console.log("YYY", pageProps)
   const session = await getSession();
   const userEmail = session?.user?.email;
 
@@ -58,14 +56,13 @@ export default async function RootLayout({
         <div className="App">
           <Container>
             <h1>Carbon Flow carbon accounting DAO</h1>
-            <p>Username: {userEmail !== null ? (<>{userEmail} ({/*<Logout refreshUser={refreshUser}/>*/})</>) : "(none)"}</p>
             <List style={{ display: 'flex', flexDirection: 'row', padding: 0 }}>
               {/* TODO: Clicking outside item does not open the link. */}
               <ListItem><Link href="/login" className="nav-link">Login</Link></ListItem>
               <ListItem><Link href="/register" className="nav-link">Register</Link></ListItem>
               <ListItem><Link href="/organization" className="nav-link">Organizations</Link></ListItem>
             </List>
-            <SubLayout {...pageProps}>{children}</SubLayout>
+            <SubLayout>{children}</SubLayout>
           </Container>
         </div>
       </body>

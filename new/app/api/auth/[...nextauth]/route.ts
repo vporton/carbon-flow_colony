@@ -11,6 +11,7 @@ const handler = NextAuth({
         }),
         // TODO: add more providers here
     ],
+    secret: config.SECRET,
 });
 
 export { handler as GET, handler as POST };
