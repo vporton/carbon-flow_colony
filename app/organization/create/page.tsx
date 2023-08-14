@@ -3,10 +3,11 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { ColonyNetwork } from '@colony/sdk';
+import { useSigner } from "wagmi";
 // import { useWalletClient } from 'wagmi';
 
 export default function CreateOrganization(props: {}) {
-    const { data: signer } = useWalletClient();
+    const { data: signer } = useSigner();
     // useProvider()
 
     const [colonyName, setColonyName] = useState("");
