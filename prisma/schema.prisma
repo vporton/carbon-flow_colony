@@ -80,9 +80,10 @@ model ChildToken {
 }
 
 model Transaction {
-  id   Int   @id @default(autoincrement())
-  tx   Bytes @unique
-  kind Int
+  id           Int   @id @default(autoincrement())
+  tx           Bytes @unique
+  blockChecked Int?
+  kind         Int
 
   createNewToken              CreateNewTokenTransaction?    @relation
   AddExistingTokenTransaction AddExistingTokenTransaction[]
