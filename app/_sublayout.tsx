@@ -10,8 +10,8 @@ import { watchSigner } from '@wagmi/core'
 import { getDefaultProvider } from 'ethers'
 import { ColonyNetwork } from '@colony/sdk';
 import Connect from '@/components/Connect'
-import { SessionProvider, getSession, useSession } from 'next-auth/react'
-import { Session } from 'next-auth'
+import { SessionProvider, getSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 const client = createClient({
   // FIXME: how to do autoConnect?

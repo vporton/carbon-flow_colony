@@ -1,6 +1,7 @@
 import { ethAddressToBuffer } from "@/util/eth";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { SessionProvider, getSession } from 'next-auth/react';
 
 export async function POST(req: Request) {
     const j = JSON.parse(await req.json());
@@ -10,14 +11,15 @@ export async function POST(req: Request) {
         colonyAddress: Buffer,
         tokenAddress: Buffer,
         tokenAuthorityAddress: Buffer,
-      } = {
+    } = {
         name: j.name,
         colonyNickName: j.colonyNickName,
         colonyAddress: ethAddressToBuffer(j.colonyAddress),
         tokenAddress: ethAddressToBuffer(j.tokenAddress),
         tokenAuthorityAddress: ethAddressToBuffer(j.tokenAuthorityAddress),
-      };
-    const userEmail = ''; // FIXME
+    };
+    const session = await getSession();
+    const userEmail = session!.user!.email as string;
     const prisma = new PrismaClient();
     let org = await prisma.organization.create({data});
     await prisma.organizationsUsers.create({data: {userEmail, organizationId: org.id}});
