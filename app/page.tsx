@@ -10,6 +10,7 @@ export default async function Organization(props: {}) {
     const prisma = new PrismaClient();
     const session = await getSession();
     const userEmail = session?.user?.email;
+    console.log("EEE", userEmail)
     if (!userEmail) {
         redirect("/login");
     }
