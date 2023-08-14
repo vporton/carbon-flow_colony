@@ -7,7 +7,7 @@ const LoginPage = () => {
     signIn('google'); // Replace 'google' with your chosen provider
   };
 
-  let session = useSession();
+  // let session = useSession();
 
   return (
     <div>

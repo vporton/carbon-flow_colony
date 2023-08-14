@@ -4,7 +4,7 @@ import '@/app/globals.css'
 import { createPublicClient, http } from 'viem'
 import { gnosis } from '@wagmi/chains'
 import type { AppProps } from 'next/app'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { WagmiConfig, createClient } from 'wagmi'
 import { watchSigner } from '@wagmi/core'
 import { getDefaultProvider } from 'ethers'
@@ -34,13 +34,18 @@ watchSigner({}, async (signer) => {
 
 export default function SubLayout({ children }: { children: any }) { // TODO: type
   const [session, setSession] = useState<Session | undefined>();
-  getSession().then(s => setSession(s!));
+  useEffect(() => {
+    getSession().then(s => {
+      console.log("setSession");
+      setSession(s!)
+    });
+  }, []);
 
   return (
     <WagmiConfig client={client}>
       <Connect/>
       <SessionProvider session={session}>
-        <p>Username: {session?.user?.email !== null ? (<>{session?.user?.email} ({/*<Logout refreshUser={refreshUser}/>*/})</>) : "(none)"}</p>
+        <p>Username: {session?.user?.email !== null ? (<>{session?.user?.email} (Logout)</>) : "(none)"}</p>
         <ColonyContext.Provider value={colonyContextObj}>
           {children}
         </ColonyContext.Provider>

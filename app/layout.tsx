@@ -25,7 +25,7 @@ export default async function RootLayout({
   children: React.ReactNode,
 }) {
   const session = await getSession();
-  const userEmail = session?.user?.email;
+  // const userEmail = session?.user?.email;
 
   function Logout(props: {refreshUser: () => void}) {
     async function doLogout() {
