@@ -13,6 +13,8 @@
 
 - Page 404.
 
+- Ask users to donate for science.
+
 ## How to watch voting result:
 
 Yes, you can watch the MotionFinalized event. See here it's event data: https://docs.colony.io/colonysdk/api/classes/VotingReputation#event-data-4 (you will need to get the motion by the id and do what I said above or wait until I implemented the convenience result function). For an example on how to watch for events see https://github.com/JoinColony/colonyJS/blob/main/packages/sdk/examples/browser/src/events.ts
