@@ -24,31 +24,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode,
 }) {
-  const session = await getServerSession();
-  // const userEmail = session?.user?.email;
-
-  // TODO
-  function Logout(props: {refreshUser: () => void}) {
-    async function doLogout() {
-      const response = await fetch(config.BACKEND + "/logout", {
-          method: "POST", // *GET, POST, PUT, DELETE, etc.
-          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: "include", // include, *same-origin, omit
-          headers: {
-            "Content-Type": "application/json",
-          },
-          redirect: "follow", // manual, *follow, error
-      });
-      if (response.status === 200) {
-          // TODO
-      }
-    }
-
-    return (
-      <button onClick={doLogout}>Logout</button>
-    )
-  }
-
   return (
     <html lang="en">
       <body className={inter.className}>

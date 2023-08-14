@@ -10,7 +10,7 @@ import { watchSigner } from '@wagmi/core'
 import { getDefaultProvider } from 'ethers'
 import { ColonyNetwork } from '@colony/sdk';
 import Connect from '@/components/Connect'
-import { SessionProvider, getSession } from 'next-auth/react';
+import { SessionProvider, getSession, signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
 
 const client = createClient({
@@ -46,7 +46,8 @@ export default function SubLayout({ children }: { children: any }) { // TODO: ty
     <WagmiConfig client={client}>
       <Connect/>
       <SessionProvider session={session}>
-        <p>Username: {session?.user?.email !== undefined ? `${session?.user?.email} (Logout)` : "(none)"}</p>
+        <p>Username:{" "}
+          {session?.user?.email !== undefined ? <>{session?.user?.email} (<button onClick={e => signOut()}>Logout</button>)</> : "(none)"}</p>
         <ColonyContext.Provider value={colonyContextObj}>
           {children}
         </ColonyContext.Provider>
