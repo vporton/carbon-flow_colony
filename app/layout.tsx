@@ -11,15 +11,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 import SubLayout from './_sublayout';
 import './globals.css';
 import { getSession } from 'next-auth/react';
-import { SessionProvider } from "next-auth/react"
 
 const inter = Inter({ subsets: ['latin'] }) // TODO
 
-// FIXME
-// export const metadata: Metadata = {
-//   title: 'Carbon Flow carbon accounting DAO',
-//   description: 'An app to account carbon',
-// }
+export const metadata: Metadata = {
+  title: 'Carbon Flow carbon accounting DAO',
+  description: 'An app to account carbon',
+};
 
 export default async function RootLayout({
   children,
@@ -52,11 +50,6 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <head>
-        <meta charSet='utf-8'/>
-        <title>Carbon Flow carbon accounting DAO</title>
-        <link rel='stylesheet' href='/main.css'/>
-      </head>
       <body className={inter.className}>
         <div className="App">
           <Container>
