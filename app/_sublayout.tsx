@@ -34,12 +34,11 @@ watchSigner({}, async (signer) => {
 
 export default function SubLayout({ children }: { children: any }) { // TODO: type
   const [session, setSession] = useState<Session | undefined>();
-  const [userEmail, setUserEmail] = useState("");
+  // const [userEmail, setUserEmail] = useState("");
   useEffect(() => {
     getSession().then(s => {
       console.log("setSession");
       setSession(s!)
-      setUserEmail(session?.user?.email || "");
     });
   }, []);
 
@@ -47,7 +46,7 @@ export default function SubLayout({ children }: { children: any }) { // TODO: ty
     <WagmiConfig client={client}>
       <Connect/>
       <SessionProvider session={session}>
-        <p>Username: {session?.user?.email !== null ? `(${userEmail} (Logout))` : "(none)"}</p>
+        <p>Username: {session?.user?.email !== undefined ? `${session?.user?.email} (Logout)` : "(none)"}</p>
         <ColonyContext.Provider value={colonyContextObj}>
           {children}
         </ColonyContext.Provider>
