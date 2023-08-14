@@ -30,11 +30,6 @@ export default async function RootLayout({
         <div className="App">
           <Container>
             <h1>Carbon Flow carbon accounting DAO</h1>
-            <List style={{ display: 'flex', flexDirection: 'row', padding: 0 }}>
-              {/* TODO: Clicking outside item does not open the link. */}
-              <ListItem><Link href="/login" className="nav-link">Login</Link></ListItem>
-              <ListItem><Link href="/" className="nav-link">Organizations</Link></ListItem>
-            </List>
             <SubLayout>{children}</SubLayout>
           </Container>
         </div>
