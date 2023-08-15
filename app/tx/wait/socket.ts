@@ -83,7 +83,7 @@ const SocketHandler = (req: Request, res: Response) => {
     const io = new TxNotifier((res as any).socket.server);
     (res as any).socket.server.io = io;
   }
-//   res.end() // TODO: needed?
+  (res as any).end();
 }
 
 export default SocketHandler
