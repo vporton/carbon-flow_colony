@@ -1,3 +1,4 @@
+import { ethAddressToBuffer } from '@/util/eth';
 import { PrismaClient } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { Hash } from 'viem';
@@ -56,7 +57,10 @@ class TxNotifier {
             (async () => {
                 // TODO: The following may send notification second time. Does it matter?
                 const prisma = new PrismaClient();
-                const alreadyHappened = !!await prisma.transaction.findFirst({select: {id: true}, where: {tx}});
+                const alreadyHappened = !!await prisma.transaction.findFirst({
+                    select: {id: true, },
+                    where: {tx: ethAddressToBuffer(tx), confirmed: true}, // FIXME: `ethAddressToBuffer` may fail.
+                });
                 if (alreadyHappened) {
                     this.deliver(tx);
                 }
