@@ -1,10 +1,19 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { Hash } from 'viem';
 
 // Notifies the client by WebSocket, when our Ethereum transaction is confirmed.
+// MISFEATURE: This has two responsibilities: connect WebSocket and process tx notifications.
 class TxNotifier {
     wsInfo = Symbol(); // the symbol that we add to each server
     m : { [tx: Hash]: Record<symbol, Server> } = {}; // `server[wasInfo]` links back to `symbol`.
+    constructor(server: any) { // TODO: type
+        const io = new Server(server);
+        io.on('connection', ws => {
+            if (ws.handshake.url == "/tx/wait") {
+                this.addSocket(ws);
+            }
+        }
+    }
     private addHash(ws: Server, tx: Hash) {
         const s = Symbol(); // the symbol identifying the server
         (ws as any)[this.wsInfo] = s;
@@ -13,7 +22,7 @@ class TxNotifier {
         }
         this.m[tx][s] = ws;
     }
-    addSocket(ws: Server) {
+    addSocket(ws: Socket) {
         const hashes: Hash[] = [];
         ws.on('message', data => {
             // FIXME: Process errors.
@@ -49,21 +58,15 @@ class TxNotifier {
     }
 }
 
-const SocketHandler = (req, res) => {
-  if (res.socket.server.io) {
-    console.log('Socket is already running')
+const SocketHandler = (req: Request, res: Response) => {
+  if ((res as any).socket.server.io) {
+    console.log('Socket is already running');
   } else {
-    console.log('Socket is initializing')
-    const io = new Server(res.socket.server)
-    res.socket.server.io = io
-
-    io.on('connection', socket => {
-      socket.on('input-change', msg => {
-        socket.broadcast.emit('update-input', msg)
-      })
-    })
+    console.log('Socket is initializing');
+    const io = new TxNotifier((res as any).socket.server);
+    (res as any).socket.server.io = io;
   }
-  res.end()
+//   res.end() // TODO: needed?
 }
 
 export default SocketHandler
