@@ -5,16 +5,16 @@ import { Hash } from 'viem';
 // MISFEATURE: This has two responsibilities: connect WebSocket and process tx notifications.
 class TxNotifier {
     wsInfo = Symbol(); // the symbol that we add to each server
-    m : { [tx: Hash]: Record<symbol, Server> } = {}; // `server[wasInfo]` links back to `symbol`.
+    m : { [tx: Hash]: Record<symbol, Socket> } = {}; // `server[wasInfo]` links back to `symbol`.
     constructor(server: any) { // TODO: type
         const io = new Server(server);
         io.on('connection', ws => {
             if (ws.handshake.url == "/tx/wait") {
                 this.addSocket(ws);
             }
-        }
+        });
     }
-    private addHash(ws: Server, tx: Hash) {
+    private addHash(ws: Socket, tx: Hash) {
         const s = Symbol(); // the symbol identifying the server
         (ws as any)[this.wsInfo] = s;
         if (tx !in this.m) {
