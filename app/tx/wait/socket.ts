@@ -1,3 +1,4 @@
+import { PrismaClient } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { Hash } from 'viem';
 
@@ -27,9 +28,18 @@ class TxNotifier {
         ws.on('message', data => {
             // FIXME: Process errors.
             const j = JSON.parse(data);
-            const hash = j.hash;
-            this.addHash(ws, hash);
-            hashes.push(hash);
+            const tx: Hash = j.hash;
+            this.addHash(ws, tx);
+            hashes.push(tx);
+
+            (async () => {
+                // TODO: The following may send notification second time. Does it matter?
+                const prisma = new PrismaClient();
+                const alreadyHappened = !!await prisma.transaction.findFirst({select: {id: true}, where: {tx}});
+                if (alreadyHappened) {
+                    this.deliver(tx);
+                }
+            })().then(() => {});
         });
         const onClose = () => {
             for (const tx of hashes) {
