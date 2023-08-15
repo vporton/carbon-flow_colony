@@ -48,6 +48,7 @@ class TxNotifier {
                 // TODO: Report error.
                 return;
             }
+
             const tx = tx0 as Hash;
             this.addHash(ws, tx);
             hashes.push(tx);
