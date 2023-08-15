@@ -76,16 +76,17 @@ class TxNotifier {
     }
 }
 
+export let txNotifier: TxNotifier;
+
 // FIXME: https://stackoverflow.com/a/76278248/856090 may provide more correct code.
 function SocketHandler(req: Request, res: Response) {
-  if ((res as any).socket.server.io) {
+  if (txNotifier) {
     console.log('Socket is already running');
   } else {
     console.log('Socket is initializing');
-    const io = new TxNotifier((res as any).socket.server);
-    (res as any).socket.server.io = io;
+    txNotifier = new TxNotifier((res as any).socket.server);
   }
   (res as any).end();
 }
 
-export default SocketHandler
+export default SocketHandler;
