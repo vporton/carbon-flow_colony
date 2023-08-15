@@ -25,22 +25,6 @@ class TxNotifier {
     }
     addSocket(ws: Socket) {
         const hashes: Hash[] = [];
-        ws.on('message', data => {
-            // FIXME: Process errors.
-            const j = JSON.parse(data);
-            const tx: Hash = j.hash;
-            this.addHash(ws, tx);
-            hashes.push(tx);
-
-            (async () => {
-                // TODO: The following may send notification second time. Does it matter?
-                const prisma = new PrismaClient();
-                const alreadyHappened = !!await prisma.transaction.findFirst({select: {id: true}, where: {tx}});
-                if (alreadyHappened) {
-                    this.deliver(tx);
-                }
-            })().then(() => {});
-        });
         const onClose = () => {
             for (const tx of hashes) {
                 let count = 0;
@@ -54,6 +38,29 @@ class TxNotifier {
                 }
             }
         }
+        ws.on('message', data => {
+            let tx0: Hash | undefined;
+            try {
+                const j = JSON.parse(data);
+                tx0 = j.hash;
+            } catch (e) {
+                onClose();
+                // TODO: Report error.
+                return;
+            }
+            const tx = tx0 as Hash;
+            this.addHash(ws, tx);
+            hashes.push(tx);
+
+            (async () => {
+                // TODO: The following may send notification second time. Does it matter?
+                const prisma = new PrismaClient();
+                const alreadyHappened = !!await prisma.transaction.findFirst({select: {id: true}, where: {tx}});
+                if (alreadyHappened) {
+                    this.deliver(tx);
+                }
+            })().then(() => {});
+        });
         ws.on('close', onClose.bind(this));
         ws.on('error', onClose.bind(this));
     }
