@@ -76,7 +76,8 @@ class TxNotifier {
     }
 }
 
-const SocketHandler = (req: Request, res: Response) => {
+// FIXME: https://stackoverflow.com/a/76278248/856090 may provide more correct code.
+function SocketHandler(req: Request, res: Response) {
   if ((res as any).socket.server.io) {
     console.log('Socket is already running');
   } else {
