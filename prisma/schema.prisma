@@ -14,6 +14,7 @@ datasource db {
 
 model Organization {
   id                          Int                           @id @default(autoincrement())
+  colonyId                    BigInt
   name                        String
   colonyNickName              String
   colonyAddress               Bytes
@@ -25,6 +26,7 @@ model Organization {
   AddExistingTokenTransaction AddExistingTokenTransaction[]
   ChildToken                  ChildToken[]
 
+  @@index([colonyId])
   @@index([colonyNickName])
 }
 
@@ -82,29 +84,39 @@ model ChildToken {
 }
 
 model Transaction {
-  id            Int      @id @default(autoincrement())
-  tx            Bytes    @unique
-  createdAt     DateTime @default(now())
+  id            Int       @id @default(autoincrement())
+  tx            Bytes     @unique
+  createdAt     DateTime  @default(now())
   blockChecked  Int?
   lastCheckedAt DateTime?
   kind          Int
-  confirmed     Boolean
+  confirmed     Boolean   @default(false)
 
-  createNewToken              CreateNewTokenTransaction?    @relation
-  AddExistingTokenTransaction AddExistingTokenTransaction[]
+  createNewToken                   CreateNewTokenTransaction?         @relation
+  AddExistingTokenTransaction      AddExistingTokenTransaction[]
+  CreateNewOrganizationTransaction CreateNewOrganizationTransaction[]
 }
 
 model CreateNewTokenTransaction {
-  id             Int          @id
+  id             Int          @id @default(autoincrement())
   transaction    Transaction  @relation(fields: [id], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
 }
 
 model AddExistingTokenTransaction {
-  id             Int          @id
+  id             Int          @id @default(autoincrement())
   transaction    Transaction  @relation(fields: [id], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
   tokenId        BigInt
+}
+
+model CreateNewOrganizationTransaction {
+  id             Int         @id @default(autoincrement())
+  transaction    Transaction @relation(fields: [id], references: [id])
+  tokenName      String
+  tokenSymbol    String
+  colonyNickName String
+  // Intentionally no index by `colonyNickName`
 }
