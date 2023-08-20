@@ -1,4 +1,4 @@
-import { ethAddressToBuffer } from '@/util/eth';
+import { ethAddressToBuffer, ethHashToBuffer } from '@/util/eth';
 import { PrismaClient } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { Hash } from 'viem';
@@ -59,7 +59,7 @@ class TxNotifier {
                 const prisma = new PrismaClient();
                 const alreadyHappened = !!await prisma.transaction.findFirst({
                     select: {id: true, },
-                    where: {tx: ethAddressToBuffer(tx), confirmed: true}, // FIXME: `ethAddressToBuffer` may fail.
+                    where: {tx: ethHashToBuffer(tx), confirmed: true}, // FIXME: `ethAddressToBuffer` may fail.
                 });
                 if (alreadyHappened) {
                     this.deliver(tx);

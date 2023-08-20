@@ -20,9 +20,6 @@ export default function CreateOrganization(props: {}) {
             // FIXME: Uncomment:
             const colonyNetwork = new ColonyNetwork(signer as unknown as SignerOrProvider); // FIXME
 
-            // const [{ colonyAddress, tokenAddress, tokenAuthorityAddress }] = await colonyNetwork
-            //     .createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName)
-            //     .metaTx();
             // const response = await fetch(config.BACKEND + "/login", {
             //     method: "POST",
             //     cache: "no-cache",
