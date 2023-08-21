@@ -17,7 +17,6 @@ export default function CreateOrganization(props: {}) {
 
     function create() {
         async function doIt() {
-            // FIXME: Uncomment:
             const colonyNetwork = new ColonyNetwork(signer as unknown as SignerOrProvider); // FIXME
 
             // const response = await fetch(config.BACKEND + "/login", {
