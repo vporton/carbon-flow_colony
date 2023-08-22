@@ -95,6 +95,9 @@ model Transaction {
   createNewToken                   CreateNewTokenTransaction?         @relation
   AddExistingTokenTransaction      AddExistingTokenTransaction[]
   CreateNewOrganizationTransaction CreateNewOrganizationTransaction[]
+
+  @@index([confirmed])
+  @@index([lastCheckedAt])
 }
 
 model CreateNewTokenTransaction {
