@@ -4,7 +4,7 @@ import { TransactionKind } from "@/util/transactionKinds";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-async function waitForCreateOrganizationConfirmed() {
+async function waitForCreateOrganizationConfirmed(tx: string) {
     
 }
 
@@ -16,11 +16,10 @@ async function POST(req: Request) {
         tokenName: string, tokenSymbol: string, colonyNickName: string,
     } = j;
 
-    const [tx, promise] = await colonyNetwork
+    const [tx, _promise] = await colonyNetwork
         .createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName) // TODO: More parameters
         .metaTx().send();
 
-    tx.hash
     const prisma = new PrismaClient();
     // TODO: database transaction
     const dbTrans = await prisma.transaction.create({data: {
@@ -35,15 +34,15 @@ async function POST(req: Request) {
         colonyNickName,      
     }});
 
-    const [{
-        tokenAddress,
-        colonyId,
-        colonyAddress,
-        token,
-        tokenAuthorityAddress,
-        metadata,
-    }, parsedLogTransactionReceipt] = await promise();
-
+    waitForCreateOrganizationConfirmed(tx.hash);
+    // const [{
+    //     tokenAddress,
+    //     colonyId,
+    //     colonyAddress,
+    //     token,
+    //     tokenAuthorityAddress,
+    //     metadata,
+    // }, parsedLogTransactionReceipt] = await promise();
 
     return NextResponse.json({});
 }

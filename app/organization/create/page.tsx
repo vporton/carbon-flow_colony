@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { ColonyNetwork, SignerOrProvider } from '@colony/sdk';
 import { useWalletClient } from "wagmi";
@@ -10,6 +10,7 @@ export default function CreateOrganization(props: {}) {
     const { data: signer } = useWalletClient();
     // useProvider()
 
+    const [busy, setBusy] = useState(false);
     const [colonyName, setColonyName] = useState("");
     const [colonyNickName, setColonyNickName] = useState("");
     const [tokenName, setTokenName] = useState("");
@@ -48,15 +49,18 @@ export default function CreateOrganization(props: {}) {
             <p>Here you create an organization (<q>colony</q>) and its token (this token is <em>not</em> the carbon counting token).</p>
             <p><strong>Warning: After creating an organization, you cannot change the below data!</strong></p>
             <p>Organization name:{" "}
-                <input value={colonyName} onChange={(e) => setColonyName(e.target.value)}/>
+                <input value={colonyName} onChange={(e) => setColonyName(e.target.value)} disabled={busy}/>
             </p>
             <p>Organization nickname (recommended only lowercase letters):{" "}
-                <input value={colonyNickName} onChange={(e) => setColonyNickName(e.target.value)}/>
+                <input value={colonyNickName} onChange={(e) => setColonyNickName(e.target.value)} disabled={busy}/>
             </p>
-            <p>Token name: <input value={tokenName} onChange={(e) => setTokenName(e.target.value)}/></p>
+            <p>Token name: <input value={tokenName} onChange={(e) => setTokenName(e.target.value)} disabled={busy}/></p>
             <p>Token symbol (recommended a short string of uppercase letters):{" "}
-                <input value={tokenSymbol} onChange={(e) => setTokenSymbol(e.target.value)}/></p>
-            <p><Button disabled={colonyNickName === '' || tokenName === '' || tokenSymbol === ''} onClick={create}>Create</Button></p>
+                <input value={tokenSymbol} onChange={(e) => setTokenSymbol(e.target.value)} disabled={busy}/></p>
+            <p>
+                <Button disabled={busy || (colonyNickName === '' || tokenName === '' || tokenSymbol === '')} onClick={create}>Create</Button>
+                <CircularProgress style={{display: busy ? 'inline-block' : 'none'}}/>
+            </p>
         </>
     );
 }
