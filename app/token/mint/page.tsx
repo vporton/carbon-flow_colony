@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 
 import EthAmount from "@/components/EthAmount";
@@ -5,7 +7,7 @@ import { Button } from "@mui/material";
 import { PrismaClient } from "@prisma/client";
 import { useRouter } from "next/router";
 
-export default async function Mint(props: {}) {
+export default function Mint(props: {}) {
     const router = useRouter();
 
     const organizationId0 = router.query.organizationId;
@@ -31,7 +33,7 @@ export default async function Mint(props: {}) {
                 <select value={token !== undefined ? token.toString() : ""} onChange={e => setToken(e.target.value as unknown as bigint)}>
                     <option>-</option>
                 {tokens.map(t =>
-                    <optgroup label={`${t.id}/${t.id+1}` + (t.comment !== undefined ? `(${t.comment})` : "")}>
+                    <optgroup key={t.id} label={`${t.id}/${t.id+1}` + (t.comment !== undefined ? `(${t.comment})` : "")}>
                         <option value={t.id}>Non-retired ({t.id})</option>
                         <option value={t.id+1}>Retired ({t.id+1})</option>
                     </optgroup>

@@ -17,6 +17,10 @@ export default function AutocompleteOrganization() {
         });
     }
 
+    function refreshUserOrganizations() {
+        // TODO
+    }
+
     function joinOrganization(organizationId: number) {
         fetch(config.BACKEND + "/join-organizations", {
             method: "POST",

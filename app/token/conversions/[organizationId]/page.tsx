@@ -1,13 +1,17 @@
 import { Button } from "@mui/material";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
 
-export default async function Conversions(props: {}) {
+export default async function Conversions({
+    params,
+    // searchParams,
+  }: {
+    params: { organizationId: string };
+    // searchParams?: { [key: string]: string | string[] | undefined };
+  }) {
     type ParentToken = {id: number, comment: string, childs: {tokenId: number, comment: string}[]};
 
-    const router = useRouter()
-
-    const organizationId0 = router.query.organizationId;
+    const organizationId0 = params!.organizationId;
 
     let organizationId = parseInt(organizationId0 as string);
     const prisma = new PrismaClient();
@@ -30,11 +34,11 @@ export default async function Conversions(props: {}) {
     return (
         <ul>
             {ourTokens.map(parent =>
-                <li>
+                <li key={parent.id}>
                     Token {parent.id} {parent.comment !== undefined ? `(${parent.comment})` : ""}
                     <ul>
                         {parent.childs.map(child =>
-                            <li>
+                            <li key={child.tokenId}>
                                 <a href={`conversion/${child.tokenId}`}>Token {child.tokenId} {child.comment !== undefined ? `(${child.comment})` : ""}</a>
                                 <Button>Reset and remove child</Button>
                             </li>

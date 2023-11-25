@@ -1,13 +1,17 @@
 import { Button } from "@mui/material";
 import { encode } from 'html-entities';
 import { PrismaClient } from "@prisma/client";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default async function Organization(props: {}) {
-    const router = useRouter();
-
-    const id0 = router.query.id;
+export default async function Organization({
+    params,
+    // searchParams,
+  }: {
+    params: { id: string };
+    // searchParams?: { [key: string]: string | string[] | undefined };
+  }) {
+    const id0 = params!.id;
     const id = parseInt(id0 as string);
 
     const tax = 0; // FIXME
@@ -29,10 +33,10 @@ export default async function Organization(props: {}) {
             <p>Name: {colonyInfo.name}</p>
             <p><a href={colonyInfo.colonyNickName === undefined ? undefined : `https://xdai.colony.io/colony/${encodeURIComponent(colonyInfo.colonyNickName)}`}>Colony link</a></p>
             <p><q>Tax</q> {tax !== undefined ? tax*100 : "(loading)"}% <Button>Propose to change</Button></p>
-            <p>List of organization's carbon tokens (usually, should consist of one element):</p>
+            <p>List of organization&apos;s carbon tokens (usually, should consist of one element):</p>
             {tokens.length ?
                 <ul>
-                    {tokens.map(t => <li>Token {t.id}/{t.id+1} {t.comment !== undefined ? `(${encode(t.comment)})` : ""}
+                    {tokens.map(t => <li key={t.id}>Token {t.id}/{t.id+1} {t.comment !== undefined ? `(${encode(t.comment)})` : ""}
                         {" "}(
                             <Link href={`/mint/${t.id}`}>mint</Link>,
                             <Link href={`/conversions/${t.id}`}>conversions</Link>,
