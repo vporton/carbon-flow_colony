@@ -9,6 +9,10 @@ export default function SubLayout2({ children }: { children: any }) {
     const session = useSession();
     // export const ColonyContext = createContext(colonyContextObj);
 
+    function signOut() {
+        // TODO
+    }
+
     return (
         <>
             <Connect/>

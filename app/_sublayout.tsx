@@ -5,7 +5,7 @@ import { createPublicClient, http } from 'viem'
 import { gnosis } from '@wagmi/chains'
 import type { AppProps } from 'next/app'
 import { createContext, useEffect, useState } from 'react'
-import { WagmiConfig, configureChains, createClient, createConfig } from 'wagmi'
+import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 // import { watchSigner } from '@wagmi/core'
 import { getDefaultProvider } from 'ethers'
 import { ColonyNetwork } from '@colony/sdk';

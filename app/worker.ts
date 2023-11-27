@@ -16,7 +16,7 @@ async function worker() {
     // See lines 35 and 36 in the above example
 
     for (const transaction in txs) {
-        colonyNetwork.
+        // colonyNetwork.
     }
 }
 

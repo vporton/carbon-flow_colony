@@ -1,5 +1,6 @@
 import { ethAddressToBuffer } from "@/util/eth";
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

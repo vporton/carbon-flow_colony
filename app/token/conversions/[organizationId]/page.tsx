@@ -5,10 +5,10 @@ import { PrismaClient } from "@prisma/client";
 export default async function Conversions({
     params,
     // searchParams,
-  }: {
+}: {
     params: { organizationId: string };
     // searchParams?: { [key: string]: string | string[] | undefined };
-  }) {
+}) {
     type ParentToken = {id: number, comment: string, childs: {tokenId: number, comment: string}[]};
 
     const organizationId0 = params!.organizationId;
