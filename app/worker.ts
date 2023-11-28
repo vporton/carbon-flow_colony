@@ -1,7 +1,7 @@
 import { colonyNetwork, ethProvider } from "@/util/serverSideEthConnect";
 import { ColonyEventManager } from "@colony/sdk";
 import { PrismaClient } from "@prisma/client/extension";
-import { ColonyAdded__factory as ColonyAdded } from "@colony/events";
+import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events/types';
 
 async function worker() {
     const prisma = new PrismaClient();
@@ -9,11 +9,23 @@ async function worker() {
         {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirm: false}}
     );
     
-    const eventManager = new ColonyEventManager(ethProvider);
-    const colonyAddedEventSource = eventManager.createEventSource(ColonyAdded);
-    const colonyAddedFilter = eventManager.createFilter(colonyAddedEventSource, "ColonyAdded");
+    const manager = new ColonyEventManager(ethProvider);
+    // const colonyAddedEventSource = eventManager.createEventSource(ColonyAdded);
+    // const colonyAddedFilter = eventManager.createFilter(colonyAddedEventSource, "ColonyAdded");
     // Here is an example: https://github.com/JoinColony/colonyJS/blob/main/packages/sdk/examples/browser/src/events.ts
     // See lines 35 and 36 in the above example
+    const colonyEventSource = manager.createEventSource(ColonyEventsFactory);
+
+    // const domainEvents = manager.createMultiFilter(
+    //     colonyEventSource,
+    //     ['DomainAdded(address,uint256)', 'DomainMetadata(address,uint256,string)'],
+    //     colonyAddress,
+    //   );
+    
+    // TODO
+    // manager.provider.on('block', async (no) => {
+    //     manager.
+    // });
 
     for (const transaction in txs) {
         // colonyNetwork.

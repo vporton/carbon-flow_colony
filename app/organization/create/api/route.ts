@@ -34,6 +34,7 @@ async function POST(req: Request) {
         colonyNickName,      
     }});
 
+    // TODO: (should be `await` before `waitForCreateOrganizationConfirmed`?)
     waitForCreateOrganizationConfirmed(tx.hash);
     // const [{
     //     tokenAddress,
