@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// FIXME: onDelete Cascade
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,49 +14,46 @@ model Organization {
   colonyAddress               Bytes
   tokenAddress                Bytes
   tokenAuthorityAddress       Bytes
-  users                       OrganizationsUsers[]
-  tokens                      OrganizationsTokens[]
-  CreateNewTokenTransaction   CreateNewTokenTransaction[]
   AddExistingTokenTransaction AddExistingTokenTransaction[]
   ChildToken                  ChildToken[]
+  CreateNewTokenTransaction   CreateNewTokenTransaction[]
+  tokens                      OrganizationsTokens[]
+  users                       OrganizationsUsers[]
 
   @@index([colonyNickName])
 }
 
 model User {
   email         String               @id
-  // ethAddress Bytes @unique // whatever the user chooses in client
   organizations OrganizationsUsers[]
 }
 
-// A user can join an organization without asking for permission.
 model OrganizationsUsers {
-  organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
-  user           User         @relation(fields: [userEmail], references: [email])
   userEmail      String
   assignedAt     DateTime     @default(now())
+  user           User         @relation(fields: [userEmail], references: [email])
+  organization   Organization @relation(fields: [organizationId], references: [id])
 
   @@id([organizationId, userEmail])
   @@index([organizationId])
   @@index([userEmail])
 }
 
-// Only non-retired tokens
 model Token {
-  id            Int                   @id
-  organizations OrganizationsTokens[]
+  id            Int                   @id @default(autoincrement())
   childs        ChildToken[]          @relation("child")
   parents       ChildToken[]          @relation("parent")
+  organizations OrganizationsTokens[]
 }
 
 model OrganizationsTokens {
-  organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
-  token          Token        @relation(fields: [tokenId], references: [id])
   tokenId        Int
   assignedAt     DateTime     @default(now())
   comment        String
+  token          Token        @relation(fields: [tokenId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
 
   @@id([organizationId, tokenId])
   @@index([organizationId])
@@ -69,12 +61,12 @@ model OrganizationsTokens {
 }
 
 model ChildToken {
-  parent         Token        @relation("parent", fields: [parentId], references: [id])
   parentId       Int
-  child          Token        @relation("child", fields: [childId], references: [id])
   childId        Int
-  organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  child          Token        @relation("child", fields: [childId], references: [id])
+  parent         Token        @relation("parent", fields: [parentId], references: [id])
 
   @@id([organizationId, parentId, childId])
   @@index([parentId])
@@ -82,17 +74,16 @@ model ChildToken {
 }
 
 model Transaction {
-  id            Int       @id @default(autoincrement())
-  tx            Bytes     @unique
-  createdAt     DateTime  @default(now())
-  blockChecked  Int?
-  lastCheckedAt DateTime?
-  kind          Int
-  confirmed     Boolean   @default(false)
-
-  createNewToken                   CreateNewTokenTransaction?         @relation
-  AddExistingTokenTransaction      AddExistingTokenTransaction[]
-  CreateNewOrganizationTransaction CreateNewOrganizationTransaction[]
+  id                               Int                               @id @default(autoincrement())
+  tx                               Bytes                             @unique
+  createdAt                        DateTime                          @default(now())
+  blockChecked                     Int?
+  lastCheckedAt                    DateTime?
+  kind                             Int
+  confirmed                        Boolean                           @default(false)
+  AddExistingTokenTransaction      AddExistingTokenTransaction?
+  CreateNewOrganizationTransaction CreateNewOrganizationTransaction?
+  createNewToken                   CreateNewTokenTransaction?
 
   @@index([confirmed])
   @@index([lastCheckedAt])
@@ -100,24 +91,23 @@ model Transaction {
 
 model CreateNewTokenTransaction {
   id             Int          @id @default(autoincrement())
-  transaction    Transaction  @relation(fields: [id], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  transaction    Transaction  @relation(fields: [id], references: [id])
 }
 
 model AddExistingTokenTransaction {
   id             Int          @id @default(autoincrement())
-  transaction    Transaction  @relation(fields: [id], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
   tokenId        BigInt
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  transaction    Transaction  @relation(fields: [id], references: [id])
 }
 
 model CreateNewOrganizationTransaction {
   id             Int         @id @default(autoincrement())
-  transaction    Transaction @relation(fields: [id], references: [id])
   tokenName      String
   tokenSymbol    String
   colonyNickName String
-  // Intentionally no index by `colonyNickName`
+  transaction    Transaction @relation(fields: [id], references: [id])
 }
