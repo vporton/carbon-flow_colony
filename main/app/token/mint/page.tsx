@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-import EthAmount from "@/components/EthAmount";
+import EthAmount from "@/main/components/EthAmount";
 import { Button } from "@mui/material";
 import { PrismaClient } from "@prisma/client";
 import { useRouter } from "next/router";
-import MintInside from "@/components/MintInside";
+import MintInside from "@/main/components/MintInside";
 
 export default async function Mint({
     params,

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "cd main && next dev",
+    "build": "cd main && next build",
+    "start": "cd main && next start",
+    "lint": "cd main && next lint"
   },
   "dependencies": {
     "@colony/sdk": "^2.0.0-next.7",
