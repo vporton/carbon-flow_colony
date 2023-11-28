@@ -22,7 +22,7 @@ export default async function Conversions({
             select: {
                 organization: { select: { tokens: { select: {tokenId: true, comment: true}, where: {organizationId}} } },
             },
-            where: {organizationId},
+            where: {organizationId: { equals: organizationId }},
         },
         organizations: {select: {comment: true}, where: {organizationId}},
       },

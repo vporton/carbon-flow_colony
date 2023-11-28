@@ -10,15 +10,13 @@ export default async function Mint({
     params,
     // searchParams,
 }: {
-    params: { organizationId: string };
+    params: { organizationId: number };
     // searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-    const organizationId = parseInt(params.organizationId as string);
-
     const prisma = new PrismaClient();
     const tokens0 = await prisma.organizationsTokens.findMany({
         select: {token: { select: { id: true } }, comment: true},
-        where: { organizationId },
+        where: { organizationId: { equals: params.organizationId } },
     });
     const tokens = tokens0.map(t => { return {id: t.token.id, comment: t.comment} });
 

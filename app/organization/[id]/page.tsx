@@ -15,7 +15,7 @@ export default async function Organization({
     const prisma = new PrismaClient();
     const tokens0 = await prisma.organizationsTokens.findMany({
         select: {token: { select: { id: true } }, comment: true},
-        where: { organizationId: id },
+        where: { organizationId: { equals: id } },
     });
     const tokens = tokens0.map(t => { return {id: t.token.id, comment: t.comment} });
 
