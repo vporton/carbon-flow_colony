@@ -4,12 +4,12 @@ import AutocompleteOrganization from './_autocompleteOrganization';
 import { useSession, signIn, signOut } from "next-auth/react"
 import Link from 'next/link';
 import { redirect } from 'next/navigation'
-import config from '@/config.json';
+import config from '@/../../config.json';
 import { useEffect } from 'react';
 import { getServerSession } from 'next-auth';
 
 export default async function Organization(props: {}) {
-    const worker = new Worker('./worker.js', { workerData });
+    // const worker = new Worker('./worker.js', { workerData });
 
     const prisma = new PrismaClient();
     const session = await getServerSession();

@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "es6",
+    "module": "esnext",
     "strict": true,
-    "moduleResolution": "nodenext",
-    "outDir": "../dist",
+    "moduleResolution": "bundler",
     "composite": true,
     "declarationMap": true,
     "sourceMap": true,

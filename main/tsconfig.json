@@ -1,12 +1,27 @@
 {
-    "extends": "../generic-tsconfig.json",
-    "compilerOptions": {
-      "lib": ["dom", "dom.iterable", "esnext"],
-    },
-    "references": [
-      {"path": "../worker"},
+  "extends": "../generic-tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-    "exclude": ["node_modules"]
-  }
-  
+    "noEmit": true,
+    "module": "nodenext"
+  },
+  "references": [
+    {
+      "path": "../worker"
+    }
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "outDir": "dist",
+}
