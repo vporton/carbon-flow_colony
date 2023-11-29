@@ -8,7 +8,7 @@ async function waitForCreateOrganizationConfirmed(tx: string) {
     
 }
 
-async function POST(req: Request) {
+export async function POST(req: Request) {
     const j = JSON.parse(await req.json());
     const {
         tokenName, tokenSymbol, colonyNickName
@@ -47,5 +47,3 @@ async function POST(req: Request) {
 
     return NextResponse.json({});
 }
-
-export { POST };

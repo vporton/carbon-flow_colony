@@ -7,7 +7,6 @@
       "esnext"
     ],
     "noEmit": true,
-    "module": "nodenext"
   },
   "references": [
     {
@@ -23,5 +22,5 @@
   "exclude": [
     "node_modules"
   ],
-  "outDir": "dist",
+  "outDir": "dist"
 }
