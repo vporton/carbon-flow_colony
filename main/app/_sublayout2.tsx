@@ -1,7 +1,7 @@
 'use client'
 
-import Connect from "@/main/components/Connect";
-import MyMenu from "@/main/components/MyMenu";
+import Connect from "@/components/Connect";
+import MyMenu from "@/components/MyMenu";
 import { useSession } from "next-auth/react";
 import { createContext } from "react";
 

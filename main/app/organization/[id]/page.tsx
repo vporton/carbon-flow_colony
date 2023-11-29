@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import OrganizationInside from "@/main/components/OrganizationInside";
+import OrganizationInside from "@/components/OrganizationInside";
 
 export default async function Organization({
     params,
