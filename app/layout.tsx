@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   description: 'An app to account carbon',
 };
 
+const worker = new Worker(new URL('../worker.ts', import.meta.url))
+
 export default async function RootLayout({
   children,
 }: {
