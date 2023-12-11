@@ -7,8 +7,11 @@ import { redirect } from 'next/navigation'
 import config from '@/config.json';
 import { useEffect } from 'react';
 import { getServerSession } from 'next-auth';
+import { Worker } from 'worker_threads'
 
 export default async function Organization(props: {}) {
+    const worker = new Worker(new URL('../worker/worker.js', import.meta.url));
+
     const prisma = new PrismaClient();
     const session = await getServerSession();
     const userEmail = session?.user?.email;
