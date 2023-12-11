@@ -1,4 +1,5 @@
 import React from 'react';
+import { Worker } from 'worker_threads'
 
 import config from '@/config.json'
 import { OrganizeImportsMode } from 'typescript';
