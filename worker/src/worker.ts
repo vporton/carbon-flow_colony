@@ -1,8 +1,9 @@
 import { colonyNetwork, ethProvider } from "@/../util/serverSideEthConnect";
-import { ColonyEventManager } from "@colony/sdk";
+import { ColonyEventManager, ColonyNetwork, ColonyRpcEndpoint, Network } from "@colony/sdk";
+import { getColonyNetworkClient } from '@colony/colony-js';
 import { PrismaClient } from "@prisma/client";
 import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
-import { utils } from "ethers";
+import { providers, utils } from "ethers";
 import { TransactionKind } from "@/../util/transactionKinds";
 import { ethAddressToBuffer, ethHashToBuffer } from "@/../util/eth";
 
@@ -18,22 +19,10 @@ const port = process.env.WORKER_PORT || 3001;
 async function worker() {
     const prisma = new PrismaClient();
     
-    const manager = new ColonyEventManager(ethProvider);
-    // TODO: Remove the below commented out code.
-    // const colonyAddedEventSource = eventManager.createEventSource(ColonyAdded);
-    // const colonyAddedFilter = eventManager.createFilter(colonyAddedEventSource, "ColonyAdded");
-    // Here is an example: https://github.com/JoinColony/colonyJS/blob/main/packages/sdk/examples/browser/src/events.ts
-    // See lines 35 and 36 in the above example
-    // const colonyEventSource = manager.createEventSource(ColonyEventsFactory);
+    // const provider = new providers.JsonRpcProvider(ColonyRpcEndpoint.Gnosis); // TODO: WebSocket?
 
-    // const ourEvents = manager.createMultiFilter(
-    //     colonyEventSource,
-    //     ['ColonyAdded(uint256,address,address)'], // FIXME
-    //     // colonyAddress,
-    // );
-
-    // Ethers provider
-    const provider = colonyNetwork.getInternalNetworkContract().provider; // That should work, but it is not elegant.
+    const eventManager = new ColonyEventManager(ethProvider);
+    const colonyEventSource = eventManager.createEventSource(ColonyEventsFactory);
 
     async function processEvent(event: any, id: number, kind: TransactionKind) {
         switch (kind) {
@@ -55,35 +44,31 @@ async function worker() {
         }
     }
 
-    // TODO: Remove old events.
+    // TODO: Remove old events from the DB.
 
     // TODO: Process remaining events on startup.
     const txs = await prisma.transaction.findMany(
         {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}
     );
     
-    const filter = {
-        // address: THE_ADDRESS_OF_YOUR_CONTRACT, // FIXME: without speicifying this, can read from fake contracts
-        // topics: [
-        //     utils.id('ColonyAdded(uint256,address,address)'),
-        //     utils.id('Transfer(address,address,uint256)'),
-        // ],
-    };
-    provider.on(filter, async (log) => { // FIXME: Is `async` supported here?
-        console.log("_log, event", log)
-        const transactionHash = log.transactionHash; // TODO: correct?
-        const tx = await provider.getTransaction(transactionHash);
-        const txData = tx.data;
-        const to = tx.to;
-        const { id, kind } = await prisma.transaction.findFirstOrThrow(
-            // TODO: Are all `select` args necessary?
-            {select: {id: true, kind: true, blockChecked: true}, where: {confirmed: false, tx: ethHashToBuffer(transactionHash)}} // FIXME
-        );
-        await processEvent(log, id, kind);
-        // TODO: Is `event.block` a correct field?
-        // TODO: Should use the function `NOW` instead of `new Date()`.
-        await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: event.block, lastCheckedAt: new Date()}});
-    });
+    const filter = await eventManager.createMultiFilter(colonyEventSource, [
+        'ColonyInitialised(address,address)',
+    ]);
+    for (;;) {
+        const events = await eventManager.getMultiEvents([
+            filter,
+        ]);
+        for (const event of events) {
+            const { id, kind } = await prisma.transaction.findFirstOrThrow(
+                // TODO: Are all `select` args necessary?
+                {select: {id: true, kind: true, blockChecked: true}, where: {confirmed: false, tx: ethHashToBuffer(event.transactionHash)}} // FIXME
+            );
+            await processEvent(event, id, kind);
+            // TODO: Is `event.block` a correct field?
+            // TODO: Should use the function `NOW` instead of `new Date()`.
+            await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: event.block, lastCheckedAt: new Date()}});
+        }
+    }
 }
 
 app.listen(port, () => {
