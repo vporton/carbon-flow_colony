@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
 import { utils } from "ethers";
 import { TransactionKind } from "@/../util/transactionKinds";
-import { ethAddressToBuffer } from "@/../util/eth";
+import { ethAddressToBuffer, ethHashToBuffer } from "@/../util/eth";
 
 import express, { Express, Request, Response } from "express";
 
@@ -63,18 +63,23 @@ async function worker() {
     );
     
     const filter = {
-        // address: THE_ADDRESS_OF_YOUR_CONTRACT,
+        // address: THE_ADDRESS_OF_YOUR_CONTRACT, // FIXME: without speicifying this, can read from fake contracts
         // topics: [
-        //     utils.id('ColonyAdded(uint256,address,address)')
+        //     utils.id('ColonyAdded(uint256,address,address)'),
+        //     utils.id('Transfer(address,address,uint256)'),
         // ],
     };
-    provider.on(filter, async (_log, event) => { // FIXME: Is `async` supported here?
-        const transactionHash = event.transactionHash; // TODO: correct?
+    provider.on(filter, async (log) => { // FIXME: Is `async` supported here?
+        console.log("_log, event", log)
+        const transactionHash = log.transactionHash; // TODO: correct?
+        const tx = await provider.getTransaction(transactionHash);
+        const txData = tx.data;
+        const to = tx.to;
         const { id, kind } = await prisma.transaction.findFirstOrThrow(
             // TODO: Are all `select` args necessary?
-            {select: {id: true, kind: true, blockChecked: true}, where: {confirmed: false, tx: transactionHash}} // FIXME
+            {select: {id: true, kind: true, blockChecked: true}, where: {confirmed: false, tx: ethHashToBuffer(transactionHash)}} // FIXME
         );
-        await processEvent(event, id, kind);
+        await processEvent(log, id, kind);
         // TODO: Is `event.block` a correct field?
         // TODO: Should use the function `NOW` instead of `new Date()`.
         await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: event.block, lastCheckedAt: new Date()}});
