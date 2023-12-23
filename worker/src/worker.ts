@@ -9,19 +9,19 @@ import { ethAddressToBuffer } from "@/../util/eth";
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ path: '../../.env' });
 
 console.log("XXX")
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = process.env.WORKER_PORT || 3001;
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
 });
 
 app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+  console.log(`[worker]: Server is running at http://localhost:${port}`);
 });
 
 async function worker() {
