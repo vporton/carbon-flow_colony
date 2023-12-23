@@ -68,7 +68,7 @@ async function worker() {
             // TODO: Should use the function `NOW` instead of `new Date()`.
             await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: no, lastCheckedAt: new Date()}});
         }
-    }
+    });
 }
 
 app.listen(port, () => {
