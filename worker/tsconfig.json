@@ -1,9 +1,15 @@
 {
-    "extends": "../generic-tsconfig.json",
-    "compilerOptions": {
-      "lib": ["esnext", "webworker"],
-    },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-    "exclude": ["node_modules"],
-    "outDir": "dist/worker",
-  }
+  "extends": "../generic-tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["esnext"],
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}
