@@ -50,7 +50,7 @@ async function worker() {
     const txs = await prisma.transaction.findMany(
         {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}
     );
-    
+
     const filter = await eventManager.createMultiFilter(colonyEventSource, [
         'ColonyInitialised(address,address)',
     ]);
