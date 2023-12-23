@@ -1,6 +1,6 @@
-import { ethHashToBuffer } from "@/util/eth";
-import { colonyNetwork } from "@/util/serverSideEthConnect";
-import { TransactionKind } from "@/util/transactionKinds";
+import { ethHashToBuffer } from "@/../util/eth";
+import { colonyNetwork } from "@/../util/serverSideEthConnect";
+import { TransactionKind } from "@/../util/transactionKinds";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
