@@ -54,10 +54,11 @@ async function worker() {
     const filter = await eventManager.createMultiFilter(colonyEventSource, [
         'ColonyInitialised(address,address)',
     ]);
-    for (;;) {
-        const events = await eventManager.getMultiEvents([
-            filter,
-        ]);
+    eventManager.provider.on('block', async (no: number) => {
+        const events = await eventManager.getMultiEvents(
+            [ filter ],
+            { fromBlock: no, toBlock: no },
+        );
         for (const event of events) {
             const { id, kind } = await prisma.transaction.findFirstOrThrow(
                 // TODO: Are all `select` args necessary?
@@ -66,7 +67,7 @@ async function worker() {
             await processEvent(event, id, kind);
             // TODO: Is `event.block` a correct field?
             // TODO: Should use the function `NOW` instead of `new Date()`.
-            await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: event.block, lastCheckedAt: new Date()}});
+            await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: no, lastCheckedAt: new Date()}});
         }
     }
 }
