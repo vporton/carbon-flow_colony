@@ -12,7 +12,7 @@ export function ethHashToBuffer(address: string): Buffer {
 
 export async function bufferToEthHash(buf: Buffer) {
   let result = "0x"; // TODO
-  for (let x of buf) {
+  for (let x of Array.from(buf)) {
       let hex = x.toString(16);
       if (hex.length === 1) {
         hex = "0" + hex;
