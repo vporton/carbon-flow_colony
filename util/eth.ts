@@ -41,7 +41,7 @@ export async function bufferToEthAddress(buf: Buffer) {
       throw new Error("wrong Ethereum address");
   }
   let result = "0x";
-  for (let x of buf) {
+  for (let x of Array.from(buf)) {
       let hex = x.toString(16);
       if (hex.length === 1) {
         hex = "0" + hex;
