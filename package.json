@@ -3,13 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cd main && next dev",
-    "build": "cd main && next build",
-    "start": "cd main && next start",
-    "lint": "cd main && next lint",
-    "build-worker": "cd worker && esbuild src/worker.ts --platform=node --bundle --minify --outfile=dist/worker.js",
-    "start-worker": "npm run build-worker && cd worker && node dist/worker.js",
-    "dev-worker": "cd worker && nodemon worker.ts"
+    "build": "concurrently \"npm run build:next\" \"npm run build:worker\"",
+    "start": "concurrently \"npm run start:next\" \"npm run start:worker\"",
+    "dev": "concurrently \"npm run dev:next\" \"npm run dev:worker\"",
+    "lint": "npm run lint:next && npm run lint:worker",
+    "build:next": "cd main && next build",
+    "start:next": "cd main && next start",
+    "dev:next": "cd main && next dev",
+    "lint:next": "cd main && next lint",
+    "build:worker": "cd worker && esbuild src/worker.ts --platform=node --bundle --minify --outfile=dist/worker.js",
+    "start:worker": "npm run build:worker && cd worker && node dist/worker.js",
+    "dev:worker": "npm run build:worker && cd worker && nodemon worker.ts",
+    "lint:worker": "cd worker && eslint"
   },
   "dependencies": {
     "@colony/sdk": "^2.0.0-next.7",
