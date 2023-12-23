@@ -9,8 +9,6 @@ import { useEffect } from 'react';
 import { getServerSession } from 'next-auth';
 
 export default async function Organization(props: {}) {
-    // const worker = new Worker('./worker.js', { workerData });
-
     const prisma = new PrismaClient();
     const session = await getServerSession();
     const userEmail = session?.user?.email;
