@@ -2,8 +2,8 @@
   "extends": "../generic-tsconfig.json",
   "compilerOptions": {
     "target": "ES5",
-    "module": "Node16",
-    "moduleResolution": "Node16",
+    "module": "NodeNext",
+    "moduleResolution": "Bundler",
     "lib": ["esnext"],
     "outDir": "dist",
     "paths": {

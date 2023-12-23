@@ -25,7 +25,7 @@ app.listen(port, () => {
 });
 
 async function worker() {
-    const prisma = new PrismaClient();
+    // const prisma = new PrismaClient();
     
 //     const manager = new ColonyEventManager(ethProvider);
 //     // TODO: Remove the below commented out code.
