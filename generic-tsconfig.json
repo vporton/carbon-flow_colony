@@ -1,4 +1,14 @@
 {
   "compilerOptions": {
+    "target": "es6",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true
   }
 }
