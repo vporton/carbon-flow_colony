@@ -1,7 +1,7 @@
 import { colonyNetwork, ethProvider } from "@/../util/serverSideEthConnect";
 import { ColonyEventManager } from "@colony/sdk";
 import { PrismaClient } from "@prisma/client/extension";
-import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events/types';
+import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
 import { utils } from "ethers";
 import { TransactionKind } from "@/../util/transactionKinds";
 import { ethAddressToBuffer } from "@/../util/eth";

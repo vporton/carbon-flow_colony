@@ -13,7 +13,7 @@ node_modules
 /main/out/
 
 # production
-/dist
+dist
 
 # misc
 .DS_Store
