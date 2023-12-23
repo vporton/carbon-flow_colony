@@ -7,9 +7,6 @@ import { TransactionKind } from "@/../util/transactionKinds";
 import { ethAddressToBuffer } from "@/../util/eth";
 
 import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
-
-dotenv.config({ path: '../.env' });
 
 const app: Express = express();
 const port = process.env.WORKER_PORT || 3001;
@@ -21,7 +18,7 @@ const port = process.env.WORKER_PORT || 3001;
 async function worker() {
     const prisma = new PrismaClient();
     
-    // const manager = new ColonyEventManager(ethProvider);
+    const manager = new ColonyEventManager(ethProvider);
     // TODO: Remove the below commented out code.
     // const colonyAddedEventSource = eventManager.createEventSource(ColonyAdded);
     // const colonyAddedFilter = eventManager.createFilter(colonyAddedEventSource, "ColonyAdded");
