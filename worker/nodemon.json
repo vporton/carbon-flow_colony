@@ -1,6 +1,4 @@
 {
-    "watch": ["src"],
-    "ext": "ts",
-    "exec": "concurrently \"npm run build:worker\" \"node dist/worker.js\""
-  }
-  
+  "watch": ["src", "../util"],
+  "ext": "ts,json"
+}
