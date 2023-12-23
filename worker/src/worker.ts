@@ -60,12 +60,11 @@ async function worker() {
             { fromBlock: no, toBlock: no },
         );
         for (const event of events) {
-            const { id, kind } = await prisma.transaction.findFirstOrThrow(
-                // TODO: Are all `select` args necessary?
-                {select: {id: true, kind: true, blockChecked: true}, where: {confirmed: false, tx: ethHashToBuffer(event.transactionHash)}} // FIXME
-            );
+            const { id, kind } = await prisma.transaction.findFirstOrThrow({ // FIXME
+                select: {id: true, kind: true, blockChecked: true}, // TODO: Are all `select` args necessary?
+                where: {confirmed: false, tx: ethHashToBuffer(event.transactionHash)},
+            });
             await processEvent(event, id, kind);
-            // TODO: Is `event.block` a correct field?
             // TODO: Should use the function `NOW` instead of `new Date()`.
             await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: no, lastCheckedAt: new Date()}});
         }
