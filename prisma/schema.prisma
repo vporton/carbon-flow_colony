@@ -105,9 +105,10 @@ model AddExistingTokenTransaction {
 }
 
 model CreateNewOrganizationTransaction {
-  id             Int         @id @default(autoincrement())
-  tokenName      String
-  tokenSymbol    String
-  colonyNickName String
-  transaction    Transaction @relation(fields: [id], references: [id])
+  id               Int         @id @default(autoincrement())
+  tokenName        String
+  tokenSymbol      String
+  colonyNickName   String
+  organizationName String
+  transaction      Transaction @relation(fields: [id], references: [id])
 }

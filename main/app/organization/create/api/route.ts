@@ -12,9 +12,9 @@ export async function POST(req: Request) {
     // TODO
     // const j = JSON.parse(await req.json());
     // const {
-    //     tokenName, tokenSymbol, colonyNickName
+    //     tokenName, tokenSymbol, colonyNickName, organizationName,
     // }: {
-    //     tokenName: string, tokenSymbol: string, colonyNickName: string,
+    //     tokenName: string, tokenSymbol: string, colonyNickName: string, organizationName: string,
     // } = j;
 
     // const [tx, _promise] = await colonyNetwork
@@ -32,7 +32,8 @@ export async function POST(req: Request) {
     //     id: dbTrans.id,
     //     tokenName,
     //     tokenSymbol,
-    //     colonyNickName,      
+    //     colonyNickName,
+    //     organizationName,
     // }});
 
     // // TODO: (should be `await` before `waitForCreateOrganizationConfirmed`?)
