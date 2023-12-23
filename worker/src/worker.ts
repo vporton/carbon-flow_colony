@@ -33,52 +33,52 @@ async function worker() {
     // );
 
     // Ethers provider
-    // const provider = colonyNetwork.getInternalNetworkContract().provider; // That should work, but it is not elegant.
+    const provider = colonyNetwork.getInternalNetworkContract().provider; // That should work, but it is not elegant.
 
-    // async function processEvent(event: any, id: number, kind: TransactionKind) {
-    //     switch (kind) {
-    //         case TransactionKind.CREATE_ORGANIZATION:
-    //             const {organizationName, colonyNickName} = await prisma.createNewOrganizationTransaction.findFirstOrThrow({
-    //                 select: {tokenName: true, tokenSymbol: true, colonyNickName: true, organizationName: true},
-    //                 where: {id},
-    //             })
-    //             await prisma.organization.create({
-    //                 data: {
-    //                     name: organizationName,
-    //                     colonyNickName,
-    //                     colonyAddress: ethAddressToBuffer(event.args.colonyAddress),
-    //                     tokenAddress: ethAddressToBuffer(event.args.tokenAddress),
-    //                     tokenAuthorityAddress: ethAddressToBuffer("0x0"), // FIXME                  
-    //                 },
-    //             });
-    //             break;
-    //     }
-    // }
+    async function processEvent(event: any, id: number, kind: TransactionKind) {
+        switch (kind) {
+            case TransactionKind.CREATE_ORGANIZATION:
+                const {organizationName, colonyNickName} = await prisma.createNewOrganizationTransaction.findFirstOrThrow({
+                    select: {tokenName: true, tokenSymbol: true, colonyNickName: true, organizationName: true},
+                    where: {id},
+                })
+                await prisma.organization.create({
+                    data: {
+                        name: organizationName,
+                        colonyNickName,
+                        colonyAddress: ethAddressToBuffer(event.args.colonyAddress),
+                        tokenAddress: ethAddressToBuffer(event.args.tokenAddress),
+                        tokenAuthorityAddress: ethAddressToBuffer("0x0"), // FIXME                  
+                    },
+                });
+                break;
+        }
+    }
 
     // TODO: Remove old events.
 
     // TODO: Process remaining events on startup.
-    // const txs = await prisma.transaction.findMany(
-    //     {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirm: false}}
-    // );
+    const txs = await prisma.transaction.findMany(
+        {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}
+    );
     
-    // const filter = {
-    //     // address: THE_ADDRESS_OF_YOUR_CONTRACT,
-    //     // topics: [
-    //     //     utils.id('ColonyAdded(uint256,address,address)')
-    //     // ],
-    // };
-    // provider.on(filter, async (_log, event) => { // FIXME: Is `async` supported here?
-    //     const transactionHash = event.transactionHash; // TODO: correct?
-    //     const { id, kind } = await prisma.transaction.findFirstOrThrow(
-    //         // TODO: Are all `select` args necessary?
-    //         {select: {id: true, kind: true, blockChecked: true}, where: {confirmed: false, tx: transactionHash}} // FIXME
-    //     );
-    //     await processEvent(event, id, kind);
-    //     // TODO: Is `event.block` a correct field?
-    //     // TODO: Should use the function `NOW` instead of `new Date()`.
-    //     await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: event.block, lastCheckedAt: new Date()}});
-    // });
+    const filter = {
+        // address: THE_ADDRESS_OF_YOUR_CONTRACT,
+        // topics: [
+        //     utils.id('ColonyAdded(uint256,address,address)')
+        // ],
+    };
+    provider.on(filter, async (_log, event) => { // FIXME: Is `async` supported here?
+        const transactionHash = event.transactionHash; // TODO: correct?
+        const { id, kind } = await prisma.transaction.findFirstOrThrow(
+            // TODO: Are all `select` args necessary?
+            {select: {id: true, kind: true, blockChecked: true}, where: {confirmed: false, tx: transactionHash}} // FIXME
+        );
+        await processEvent(event, id, kind);
+        // TODO: Is `event.block` a correct field?
+        // TODO: Should use the function `NOW` instead of `new Date()`.
+        await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: event.block, lastCheckedAt: new Date()}});
+    });
 }
 
 app.listen(port, () => {
