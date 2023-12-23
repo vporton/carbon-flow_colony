@@ -1,4 +1,4 @@
-import { ethAddressToBuffer, ethHashToBuffer } from '@/../util/eth';
+import { ethAddressToBuffer, ethHashToBuffer } from '@/util/eth';
 import { PrismaClient } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 import { Hash } from 'viem';

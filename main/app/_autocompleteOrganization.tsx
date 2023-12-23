@@ -1,6 +1,6 @@
 'use client'
 
-import config from "@/../../config.json";
+import config from "@/../config.json";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { useState } from "react";
 

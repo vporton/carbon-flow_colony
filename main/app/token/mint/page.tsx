@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { PrismaClient } from "@prisma/client";
-import MintInside from "@/../../main/components/MintInside";
+import MintInside from "@/../main/components/MintInside";
 
 export default async function Mint({
     params,
@@ -15,7 +15,7 @@ export default async function Mint({
         select: {token: { select: { id: true } }, comment: true},
         where: { organizationId: { equals: params.organizationId } },
     });
-    const tokens = tokens0.map(t => { return {id: t.token.id, comment: t.comment} });
+    const tokens = tokens0.map((t: any) => { return {id: t.token.id, comment: t.comment} }); // TODO: `any`
 
     return <MintInside tokens={tokens}/>
 }

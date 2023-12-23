@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import OrganizationInside from "@/../../main/components/OrganizationInside";
+import OrganizationInside from "@/../main/components/OrganizationInside";
 
 export default async function Organization({
     params,
@@ -17,7 +17,7 @@ export default async function Organization({
         select: {token: { select: { id: true } }, comment: true},
         where: { organizationId: { equals: id } },
     });
-    const tokens = tokens0.map(t => { return {id: t.token.id, comment: t.comment} });
+    const tokens = tokens0.map((t: any) => { return {id: t.token.id, comment: t.comment} }); // TODO: `any`
 
     let colonyInfo = await prisma.organization.findFirstOrThrow({
       select: { name: true, colonyNickName: true, colonyAddress: true },

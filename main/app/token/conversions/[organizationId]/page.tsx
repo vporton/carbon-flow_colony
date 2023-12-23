@@ -27,8 +27,8 @@ export default async function Conversions({
         organizations: {select: {comment: true}, where: {organizationId}},
       },
     });
-    let ourTokens: ParentToken[] = r.map(t => {
-        return {id: t.id, comment: t.organizations[0].comment, childs: t.childs.map(t2 => t2.organization.tokens[0])};
+    let ourTokens: ParentToken[] = r.map((t: any) => { // TODO: `any`
+        return {id: t.id, comment: t.organizations[0].comment, childs: t.childs.map((t2: any) => t2.organization.tokens[0])}; // TODO: `any`
     });
 
     return (

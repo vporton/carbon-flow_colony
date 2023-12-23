@@ -1,6 +1,6 @@
 import React from 'react';
 
-import config from '@/../../config.json'
+import config from '@/../config.json'
 import { OrganizeImportsMode } from 'typescript';
 import { Container, List, ListItem } from "@mui/material";
 
