@@ -13,7 +13,6 @@
     "lint:next": "cd main && next lint",
     "build:worker": "cd worker && esbuild src/worker.ts --platform=node --bundle --minify --outfile=dist/worker.js",
     "start:worker": "npm run build:worker && cd worker && node dist/worker.js",
-    "dev:worker": "npm run build:worker && cd worker && nodemon src/worker.ts",
     "lint:worker": "cd worker && eslint"
   },
   "dependencies": {
