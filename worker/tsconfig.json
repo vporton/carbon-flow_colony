@@ -2,7 +2,7 @@
   "extends": "../generic-tsconfig.json",
   "compilerOptions": {
     "target": "ES5",
-    "module": "NodeNext",
+    "module": "ES2022",
     "moduleResolution": "Bundler",
     "lib": ["esnext"],
     "outDir": "dist",
