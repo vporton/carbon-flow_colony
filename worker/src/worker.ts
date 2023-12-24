@@ -1,6 +1,6 @@
 import { colonyNetwork, ethProvider } from "@/../util/serverSideEthConnect";
 import { ColonyEventManager, ColonyNetwork, ColonyRpcEndpoint, Network } from "@colony/sdk";
-import { getColonyNetworkClient } from '@colony/colony-js';
+import { getColonyNetworkClient } from '@colony/colony-js'; // TODO: Remove `@colony/colony-js` dependency.
 import { PrismaClient } from "@prisma/client";
 import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
 import { providers, utils } from "ethers";
