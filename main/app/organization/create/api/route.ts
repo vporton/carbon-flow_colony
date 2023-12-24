@@ -17,6 +17,7 @@ export async function POST(req: Request) {
     //     tokenName: string, tokenSymbol: string, colonyNickName: string, organizationName: string,
     // } = j;
 
+    // FIXME: Store transaction to `CreateNewOrganizationTransaction` before sending it, to ensure no race conditions.
     // const [tx, _promise] = await colonyNetwork
     //     .createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName) // TODO: More parameters
     //     .metaTx().send();
