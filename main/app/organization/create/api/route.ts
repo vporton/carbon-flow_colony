@@ -9,33 +9,32 @@ async function waitForCreateOrganizationConfirmed(tx: string) {
 }
 
 export async function POST(req: Request) {
-    // TODO
-    // const j = JSON.parse(await req.json());
-    // const {
-    //     tokenName, tokenSymbol, colonyNickName, organizationName,
-    // }: {
-    //     tokenName: string, tokenSymbol: string, colonyNickName: string, organizationName: string,
-    // } = j;
+    const j = JSON.parse(await req.json());
+    const {
+        tokenName, tokenSymbol, colonyNickName, organizationName,
+    }: {
+        tokenName: string, tokenSymbol: string, colonyNickName: string, organizationName: string,
+    } = j;
 
     // FIXME: Store transaction to `CreateNewOrganizationTransaction` before sending it, to ensure no race conditions.
-    // const [tx, _promise] = await colonyNetwork
-    //     .createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName) // TODO: More parameters
-    //     .metaTx().send();
+    const [tx, _promise] = await colonyNetwork
+        .createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName) // TODO: More parameters
+        .metaTx().send();
 
-    // const prisma = new PrismaClient();
+    const prisma = new PrismaClient();
     // // TODO: database transaction
-    // const dbTrans = await prisma.transaction.create({data: {
-    //     tx: ethHashToBuffer(tx.hash),
-    //     kind: TransactionKind.CREATE_ORGANIZATION,
-    //     confirmed: false,
-    // }});
-    // await prisma.createNewOrganizationTransaction.create({data: {
-    //     id: dbTrans.id,
-    //     tokenName,
-    //     tokenSymbol,
-    //     colonyNickName,
-    //     organizationName,
-    // }});
+    const dbTrans = await prisma.transaction.create({data: {
+        tx: ethHashToBuffer(tx.hash),
+        kind: TransactionKind.CREATE_ORGANIZATION,
+        confirmed: false,
+    }});
+    await prisma.createNewOrganizationTransaction.create({data: {
+        id: dbTrans.id,
+        tokenName,
+        tokenSymbol,
+        colonyNickName,
+        organizationName,
+    }});
 
     // // TODO: (should be `await` before `waitForCreateOrganizationConfirmed`?)
     // waitForCreateOrganizationConfirmed(tx.hash);
