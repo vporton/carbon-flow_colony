@@ -45,15 +45,16 @@ async function worker() {
                 });
                 break;
         }
-        fetch(process.env.BACKEND_URL+"/api/worker-callback", {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': process.env.BACKEND_SECRET!,
-            },          
-            body: JSON.stringify({tx}),
-        }).then(() => {});
+        // FIXME: Uncomment.
+        // fetch(process.env.BACKEND_URL+"/api/worker-callback", {
+        //     method: 'POST',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //         'Authorization': process.env.BACKEND_SECRET!,
+        //     },          
+        //     body: JSON.stringify({tx}),
+        // }).then(() => {});
     }
 
     // TODO: Remove old events from the DB.
