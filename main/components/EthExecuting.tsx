@@ -69,7 +69,7 @@ class StoreTxsClient extends StoreTxs {
             if (state === 'mined')
                 this.remove(tx);
             else if (state === 'submitted') {
-                this.add(tx, message);
+                this.add(tx, message!);
             }
         };
     }
