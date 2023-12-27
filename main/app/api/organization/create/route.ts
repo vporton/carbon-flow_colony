@@ -21,6 +21,7 @@ export async function POST(req: Request) {
     const tx = await colonyNetwork.createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName); // TODO: More parameters
     const txHash = await getTransactionHash(await tx.tx().encode());
     txsDisplay.onSubmitted(txHash, "create colony");
+    console.log("txHash", txHash);
 
     const prisma = new PrismaClient();
     // TODO: database transaction
@@ -37,7 +38,7 @@ export async function POST(req: Request) {
         organizationName,
     }});
     const [tx2, _promise] = await tx.metaTx().send();
-    console.assert(tx2.hash === "0x"+txHash, "Programming error: hashes don't match: %s !== %s", "0x"+txHash, tx2.hash);
+    console.assert(tx2.hash === txHash, "Programming error: hashes don't match: %s !== %s", txHash, tx2.hash);
 
     // // TODO: (should be `await` before `waitForCreateOrganizationConfirmed`?)
     // waitForCreateOrganizationConfirmed(tx.hash);

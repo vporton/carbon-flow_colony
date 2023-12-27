@@ -1,8 +1,10 @@
+import { keccak256 } from "ethers/lib/utils";
+
 export function ethHashToBuffer(address: string): Buffer {
   const address2 = address.startsWith('0x') || address.startsWith('0X') ? address.substring(2) : address;
   const byteBuf = Buffer.alloc(address2.length/2);
-  for (let i=2; i<address.length; i+=2) {
-    byteBuf[i/2] = parseInt(address.slice(i,i+2),16);
+  for (let i=2; i<address2.length; i+=2) {
+    byteBuf[i/2] = parseInt(address2.slice(i,i+2),16);
     if (isNaN(byteBuf[i/2])) {
       throw new Error("wrong hash");
     }
@@ -52,11 +54,10 @@ export async function bufferToEthAddress(buf: Buffer) {
   return result;
 }
 
-// TODO: produced by an AI, check
+// It was tested OK.
 export async function getTransactionHash(rawTxString: string) {
-  const encodedTx = new TextEncoder().encode(rawTxString); // Ensure UTF-8 encoding
-  const hashBuffer = await crypto.subtle.digest('SHA-256', encodedTx);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
-  return hashHex;
+  const rawTxString2 = rawTxString.slice(0, 2) === '0x' ? rawTxString.substring(2) : rawTxString;
+  const encodedTx = Buffer.from(rawTxString2, 'hex');
+  const hashBuffer = keccak256(encodedTx);
+  return hashBuffer;
 }
