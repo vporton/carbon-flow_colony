@@ -51,3 +51,12 @@ export async function bufferToEthAddress(buf: Buffer) {
   // TODO: Create mixed-case ETH address
   return result;
 }
+
+// TODO: produced by an AI, check
+export async function getTransactionHash(rawTxString: string) {
+  const encodedTx = new TextEncoder().encode(rawTxString); // Ensure UTF-8 encoding
+  const hashBuffer = await crypto.subtle.digest('SHA-256', encodedTx);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}

@@ -1,12 +1,12 @@
-import { ethHashToBuffer } from "@/../util/eth";
+import { ethHashToBuffer, getTransactionHash } from "@/../util/eth";
 import { colonyNetwork } from "@/../util/serverSideEthConnect";
 import { TransactionKind } from "@/../util/transactionKinds";
+import { EthTxsContext } from "@/app/_sublayout2";
+import EthExecuting from "@/components/EthExecuting";
 import { PrismaClient } from "@prisma/client";
+import { assert } from "console";
 import { NextResponse } from "next/server";
-
-async function waitForCreateOrganizationConfirmed(tx: string) {
-    
-}
+import { useContext } from "react";
 
 export async function POST(req: Request) {
     const j = JSON.parse(await req.json());
@@ -17,14 +17,14 @@ export async function POST(req: Request) {
     } = j;
 
     // FIXME: Store transaction to `CreateNewOrganizationTransaction` before sending it, to ensure no race conditions.
-    const [tx, _promise] = await colonyNetwork
-        .createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName) // TODO: More parameters
-        .metaTx().send();
+    const tx = await colonyNetwork.createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName); // TODO: More parameters
+    const txHash = await getTransactionHash(await tx.tx().encode());
+    const { client: ethExecuting }: { client: EthExecuting | null } = useContext(EthTxsContext);
 
     const prisma = new PrismaClient();
     // // TODO: database transaction
     const dbTrans = await prisma.transaction.create({data: {
-        tx: ethHashToBuffer(tx.hash),
+        tx: ethHashToBuffer(txHash),
         kind: TransactionKind.CREATE_ORGANIZATION,
         confirmed: false,
     }});
@@ -35,6 +35,8 @@ export async function POST(req: Request) {
         colonyNickName,
         organizationName,
     }});
+    const [tx2, _promise] = await tx.metaTx().send();
+    console.assert(tx2.hash === txHash, "Programming error: hashes don't match");
 
     // // TODO: (should be `await` before `waitForCreateOrganizationConfirmed`?)
     // waitForCreateOrganizationConfirmed(tx.hash);
