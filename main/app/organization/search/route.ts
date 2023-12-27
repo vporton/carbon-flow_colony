@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 async function GET(req: Request) {
-    const j = JSON.parse(await req.json());
+    const j = await req.json()
     const prefix: string = j.prefix ?? "";
     const maxValues: number =  j.max ?? 50; // limit against DoS attacks.
     const prisma = new PrismaClient();

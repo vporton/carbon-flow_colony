@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ColonyNetwork, SignerOrProvider } from '@colony/sdk';
 import { useWalletClient } from "wagmi";
 // import { useWalletClient } from 'wagmi';
+import config from "@/../config.json";
 
 export default function CreateOrganization(props: {}) {
     const { data: signer } = useWalletClient();
@@ -20,25 +21,20 @@ export default function CreateOrganization(props: {}) {
         async function doIt() {
             const colonyNetwork = new ColonyNetwork(signer as unknown as SignerOrProvider); // FIXME
 
-            // const response = await fetch(config.BACKEND + "/login", {
-            //     method: "POST",
-            //     cache: "no-cache",
-            //     credentials: "include",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify({
-            //         name: colonyName,
-            //         colonyNickName,
-            //         colonyAddress,
-            //         tokenAddress,
-            //         tokenAuthorityAddress,
-            //     }),
-            // });
-            // if (response.status === 200) {
-            //     navigate(`/organization`); // FIXME
-            // }
-            // TODO
+            const _response = await fetch(config.BACKEND + "/api/organization/create", {
+                method: "POST",
+                cache: "no-cache",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    organizationName: colonyName,
+                    colonyNickName,
+                    tokenName,
+                    tokenSymbol,
+                }),
+            });
         }
         doIt().then(()=>{});
     }

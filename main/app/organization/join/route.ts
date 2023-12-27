@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
 export async function POST(req: Request) {
-    const j = JSON.parse(await req.json());
+    const j = await req.json()
     const session = await getServerSession();
     const userEmail = session!.user!.email as string;
     const orgId = j.organizationId;

@@ -10,7 +10,7 @@ import { NextResponse } from "next/server";
 import { useContext } from "react";
 
 export async function POST(req: Request) {
-    const j = JSON.parse(await req.json());
+    const j = await req.json();
     const {
         tokenName, tokenSymbol, colonyNickName, organizationName,
     }: {
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         organizationName,
     }});
     const [tx2, _promise] = await tx.metaTx().send();
-    console.assert(tx2.hash === txHash, "Programming error: hashes don't match");
+    console.assert(tx2.hash === "0x"+txHash, "Programming error: hashes don't match: %s !== %s", "0x"+txHash, tx2.hash);
 
     // // TODO: (should be `await` before `waitForCreateOrganizationConfirmed`?)
     // waitForCreateOrganizationConfirmed(tx.hash);

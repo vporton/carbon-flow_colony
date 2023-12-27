@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-    const j = JSON.parse(await req.json());
+    const j = await req.json()
     const data: {
         name: string,
         colonyNickName: string,
