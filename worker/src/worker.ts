@@ -52,7 +52,7 @@ async function worker() {
                 'Content-Type': 'application/json',
                 'Authorization': process.env.BACKEND_SECRET!,
             },          
-            body: JSON.stringify({tx}),
+            body: JSON.stringify({tx, state: 'mined'}),
         }).then(() => {});
     }
 

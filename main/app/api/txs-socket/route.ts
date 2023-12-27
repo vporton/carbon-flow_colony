@@ -8,7 +8,7 @@ const SocketHandler = (req: Request, res: Response) => {
     console.log('Socket is initializing');
     const io = new Server((res as any).socket.server);
     (res as any).socket.server.io = io;
-    txsDisplay.addWebSocket((res as any).socket);
+    txsDisplay.addWebSocket((res as any).socket); // FIXME: or `socket.server` or `io`?
   }
   (res as any).end()
 }

@@ -65,7 +65,12 @@ class StoreTxs {
 class StoreTxsClient extends StoreTxs {
     addWebSocket(ws: WebSocket) {
         ws.onmessage = (msg) => {
-            this.remove(msg.data);
+            const { tx, state, message }: { tx: string, state: 'submitted' | 'mined', message?: string } = msg.data;
+            if (state === 'mined')
+                this.remove(tx);
+            else if (state === 'submitted') {
+                this.add(tx, message);
+            }
         };
     }
 }

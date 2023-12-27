@@ -30,7 +30,7 @@ class TxNotifier {
             for (const tx of hashes) {
                 let count = 0;
                 for (const serverSymbol of Object.getOwnPropertySymbols(this.m[tx])) {
-                    const server = this.m[tx][serverSymbol];
+                    const server = this.m[tx][serverSymbol]; // TODO: unused
                     delete this.m[tx][serverSymbol];
                     ++count;
                 }
