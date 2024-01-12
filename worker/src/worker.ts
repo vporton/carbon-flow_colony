@@ -25,10 +25,11 @@ async function worker() {
 
     // TODO: Remove old events from the DB.
 
+    // TODO: What should be the order of the following two statements?
     eventManager.provider.on('block', async (no: number) => {
-        await processEvents(prisma, no, 0);
+        await processEvents(prisma);
     });
-    processEvents(prisma, await ethProvider.getBlockNumber(), 50); // FIXME: Make configurable.
+    processEvents(prisma); // FIXME: Make configurable.
 }
 
 // FIXME: mutex (https://github.com/DirtyHairy/async-mutex)
@@ -66,7 +67,7 @@ async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id:
     }).then(() => {});
 }
 
-async function processEvents(prisma: PrismaClient, blockNo: number, depth: number) {
+async function processEvents(prisma: PrismaClient) {
     const txs = await prisma.transaction.findMany(
         {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}, // TODO: Select fewer fields.
     );
