@@ -51,7 +51,6 @@ async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id:
                     colonyNickName,
                     colonyAddress: ethAddressToBuffer(event.args.colonyNetwork),
                     tokenAddress: ethAddressToBuffer(event.args.token),
-                    tokenAuthorityAddress: ethAddressToBuffer("0x0"), // FIXME                  
                 },
             });
             break;

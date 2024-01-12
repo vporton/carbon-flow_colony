@@ -13,7 +13,6 @@ model Organization {
   colonyNickName              String
   colonyAddress               Bytes
   tokenAddress                Bytes
-  tokenAuthorityAddress       Bytes
   AddExistingTokenTransaction AddExistingTokenTransaction[]
   ChildToken                  ChildToken[]
   CreateNewTokenTransaction   CreateNewTokenTransaction[]
