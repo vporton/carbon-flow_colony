@@ -31,7 +31,7 @@ async function worker() {
     processEvents(prisma, await ethProvider.getBlockNumber(), 50); // FIXME: Make configurable.
 }
 
-// FIXME: mutex
+// FIXME: mutex (https://github.com/DirtyHairy/async-mutex)
 async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
     switch (kind) {
         case TransactionKind.CREATE_ORGANIZATION:
