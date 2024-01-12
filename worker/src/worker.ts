@@ -33,29 +33,53 @@ async function worker() {
 }
 
 // FIXME: mutex (https://github.com/DirtyHairy/async-mutex)
-async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
+async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
     switch (kind) {
-        case TransactionKind.CREATE_ORGANIZATION:
-            const abi = [
-                "event ColonyInitialised(address agent, address colonyNetwork, address token)"
-            ];
+        case TransactionKind.CREATE_ORGANIZATION: {
+            const abi = ["event ColonyInitialised(address agent, address colonyNetwork, address token)"];
             const iface = new ethers.utils.Interface(abi); // TODO: Move it out of the loop.
             const event = iface.parseLog(log);
 
-            const {organizationName, colonyNickName} = await prisma.createNewOrganizationTransaction.findFirstOrThrow({
-                select: {tokenName: true, tokenSymbol: true, colonyNickName: true, organizationName: true},
-                where: {id},
-            });
+            const {organizationName, colonyNickName, tokenName, tokenSymbol} =
+                await prisma.createNewOrganizationTransaction.findFirstOrThrow({
+                    select: {tokenName: true, tokenSymbol: true, colonyNickName: true, organizationName: true},
+                    where: {id},
+                });
             await prisma.organization.create({
                 data: {
                     name: organizationName,
                     colonyNickName,
                     colonyAddress: ethAddressToBuffer(event.args.colonyNetwork),
                     tokenAddress: ethAddressToBuffer(event.args.token),
+                    tokenName,
+                    tokenSymbol,
                 },
             });
             break;
+        }
+        case TransactionKind.CREATE_TOKEN: {
+            const abi = ["event NewToken(uint256 indexed id, address indexed owner, string uri)"];
+            const iface = new ethers.utils.Interface(abi);
+            const event = iface.parseLog(log);
+
+            const {organizationId, comment} = await prisma.createNewTokenTransaction.findFirstOrThrow({
+                select: {organizationId: true, comment: true},
+                where: {id},
+            });
+            const { id: tokenId } = await prisma.token.create({data: {}});
+            await prisma.organizationsTokens.create({
+                data: {
+                    organizationId,
+                    tokenId,
+                    comment,
+                },
+            });
+        }
     }
+}
+
+async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
+    await doProcessEvent(prisma, log, id, kind, tx);
     fetch(process.env.BACKEND_URL+"/api/worker-callback", {
         method: 'POST',
         headers: {

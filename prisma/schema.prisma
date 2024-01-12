@@ -13,6 +13,8 @@ model Organization {
   colonyNickName              String
   colonyAddress               Bytes
   tokenAddress                Bytes
+  tokenName                   String
+  tokenSymbol                 String
   AddExistingTokenTransaction AddExistingTokenTransaction[]
   ChildToken                  ChildToken[]
   CreateNewTokenTransaction   CreateNewTokenTransaction[]
@@ -91,6 +93,7 @@ model Transaction {
 model CreateNewTokenTransaction {
   id             Int          @id @default(autoincrement())
   organizationId Int
+  comment        String
   organization   Organization @relation(fields: [organizationId], references: [id])
   transaction    Transaction  @relation(fields: [id], references: [id])
 }
@@ -99,6 +102,7 @@ model AddExistingTokenTransaction {
   id             Int          @id @default(autoincrement())
   organizationId Int
   tokenId        BigInt
+  comment        String
   organization   Organization @relation(fields: [organizationId], references: [id])
   transaction    Transaction  @relation(fields: [id], references: [id])
 }
@@ -111,3 +115,5 @@ model CreateNewOrganizationTransaction {
   organizationName String
   transaction      Transaction @relation(fields: [id], references: [id])
 }
+
+// TODO: `AddExistingOrganizationTransaction`
