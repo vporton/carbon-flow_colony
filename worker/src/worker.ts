@@ -16,69 +16,76 @@ const port = process.env.WORKER_PORT || 3001;
 //   res.send("Express + TypeScript Server");
 // });
 
+// TODO: global variables
+const eventManager = new ColonyEventManager(ethProvider);
+const colonyEventSource = eventManager.createEventSource(ColonyEventsFactory);
+
 async function worker() {
     const prisma = new PrismaClient();
-    
-    const eventManager = new ColonyEventManager(ethProvider);
-    const colonyEventSource = eventManager.createEventSource(ColonyEventsFactory);
-
-    async function processEvent(event: any, id: number, kind: TransactionKind, tx: string) {
-        // TODO: Process remaining events on startup.
-        // const txs = await prisma.transaction.findMany(
-        //     {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}
-        // );
-        // TODO: Read `txs` outside of the loop.
-        switch (kind) {
-            case TransactionKind.CREATE_ORGANIZATION:
-                const {organizationName, colonyNickName} = await prisma.createNewOrganizationTransaction.findFirstOrThrow({
-                    select: {tokenName: true, tokenSymbol: true, colonyNickName: true, organizationName: true},
-                    where: {id},
-                });
-                await prisma.organization.create({
-                    data: {
-                        name: organizationName,
-                        colonyNickName,
-                        colonyAddress: ethAddressToBuffer(event.data.colonyNetwork),
-                        tokenAddress: ethAddressToBuffer(event.data.token),
-                        tokenAuthorityAddress: ethAddressToBuffer("0x0"), // FIXME                  
-                    },
-                });
-                break;
-        }
-        fetch(process.env.BACKEND_URL+"/api/worker-callback", {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': process.env.BACKEND_SECRET!,
-            },          
-            body: JSON.stringify({tx, state: 'mined'}),
-        }).then(() => {});
-    }
 
     // TODO: Remove old events from the DB.
 
+    eventManager.provider.on('block', async (no: number) => {
+        await processEvents(prisma, no, 0);
+    });
+    processEvents(prisma, await ethProvider.getBlockNumber(), 50); // FIXME: configurable
+}
+
+// FIXME: mutex
+async function processEvent(prisma: PrismaClient, event: any, id: number, kind: TransactionKind, tx: string) {
+    // TODO: Process remaining events on startup.
+    // const txs = await prisma.transaction.findMany(
+    //     {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}
+    // );
+    // TODO: Read `txs` outside of the loop.
+    switch (kind) {
+        case TransactionKind.CREATE_ORGANIZATION:
+            const {organizationName, colonyNickName} = await prisma.createNewOrganizationTransaction.findFirstOrThrow({
+                select: {tokenName: true, tokenSymbol: true, colonyNickName: true, organizationName: true},
+                where: {id},
+            });
+            await prisma.organization.create({
+                data: {
+                    name: organizationName,
+                    colonyNickName,
+                    colonyAddress: ethAddressToBuffer(event.data.colonyNetwork),
+                    tokenAddress: ethAddressToBuffer(event.data.token),
+                    tokenAuthorityAddress: ethAddressToBuffer("0x0"), // FIXME                  
+                },
+            });
+            break;
+    }
+    fetch(process.env.BACKEND_URL+"/api/worker-callback", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': process.env.BACKEND_SECRET!,
+        },          
+        body: JSON.stringify({tx, state: 'mined'}),
+    }).then(() => {});
+}
+
+async function processEvents(prisma: PrismaClient, blockNo: number, depth: number) {
     const filter = await eventManager.createMultiFilter(colonyEventSource, [
         'ColonyInitialised(address,address,address)',
     ]);
-    eventManager.provider.on('block', async (no: number) => {
-        const events = await eventManager.getMultiEvents(
-            [ filter ],
-            { fromBlock: no, toBlock: no },
-        );
-        for (const event of events) {
-            const dbRes = await prisma.transaction.findFirst({
-                select: { id: true, kind: true, blockChecked: true }, // TODO: Are all `select` args necessary?
-                where: { confirmed: false, tx: ethHashToBuffer(event.transactionHash) },
-            });
-            if (dbRes !== null) {
-                const { id, kind } = dbRes;
-                await processEvent(event, id, kind, event.transactionHash);
-                // TODO: Should use the function `NOW` instead of `new Date()`.
-                await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: no, lastCheckedAt: new Date()}});
-            }
+    const events = await eventManager.getMultiEvents(
+        [ filter ],
+        { fromBlock: blockNo - depth, toBlock: blockNo },
+    );
+    for (const event of events) {
+        const dbRes = await prisma.transaction.findFirst({
+            select: { id: true, kind: true, blockChecked: true }, // TODO: Are all `select` args necessary?
+            where: { confirmed: false, tx: ethHashToBuffer(event.transactionHash) },
+        });
+        if (dbRes !== null) {
+            const { id, kind } = dbRes;
+            await processEvent(prisma, event, id, kind, event.transactionHash);
+            // TODO: Should use the function `NOW` instead of `new Date()`.
+            await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: blockNo, lastCheckedAt: new Date()}});
         }
-    });
+    }
 }
 
 app.listen(port, () => {
