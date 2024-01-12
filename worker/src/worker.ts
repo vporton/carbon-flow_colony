@@ -3,9 +3,9 @@ import { ColonyEventManager, ColonyNetwork, ColonyRpcEndpoint, Network } from "@
 import { getColonyNetworkClient } from '@colony/colony-js'; // TODO: Remove `@colony/colony-js` dependency.
 import { PrismaClient } from "@prisma/client";
 import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
-import { providers, utils } from "ethers";
+import { ethers, providers, utils } from "ethers";
 import { TransactionKind } from "@/../util/transactionKinds";
-import { ethAddressToBuffer, ethHashToBuffer } from "@/../util/eth";
+import { bufferToEthHash, ethAddressToBuffer, ethHashToBuffer } from "@/../util/eth";
 
 import express, { Express, Request, Response } from "express";
 
@@ -18,7 +18,7 @@ const port = process.env.WORKER_PORT || 3001;
 
 // TODO: global variables
 const eventManager = new ColonyEventManager(ethProvider);
-const colonyEventSource = eventManager.createEventSource(ColonyEventsFactory);
+// const colonyEventSource = eventManager.createEventSource(ColonyEventsFactory);
 
 async function worker() {
     const prisma = new PrismaClient();
@@ -28,18 +28,19 @@ async function worker() {
     eventManager.provider.on('block', async (no: number) => {
         await processEvents(prisma, no, 0);
     });
-    processEvents(prisma, await ethProvider.getBlockNumber(), 50); // FIXME: configurable
+    processEvents(prisma, await ethProvider.getBlockNumber(), 50); // FIXME: Make configurable.
 }
 
 // FIXME: mutex
-async function processEvent(prisma: PrismaClient, event: any, id: number, kind: TransactionKind, tx: string) {
-    // TODO: Process remaining events on startup.
-    // const txs = await prisma.transaction.findMany(
-    //     {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}
-    // );
-    // TODO: Read `txs` outside of the loop.
+async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
     switch (kind) {
         case TransactionKind.CREATE_ORGANIZATION:
+            const abi = [
+                "event ColonyInitialised(address agent, address colonyNetwork, address token)"
+            ];
+            const iface = new ethers.utils.Interface(abi); // TODO: Move it out of the loop.
+            const event = iface.parseLog(log);
+
             const {organizationName, colonyNickName} = await prisma.createNewOrganizationTransaction.findFirstOrThrow({
                 select: {tokenName: true, tokenSymbol: true, colonyNickName: true, organizationName: true},
                 where: {id},
@@ -48,8 +49,8 @@ async function processEvent(prisma: PrismaClient, event: any, id: number, kind: 
                 data: {
                     name: organizationName,
                     colonyNickName,
-                    colonyAddress: ethAddressToBuffer(event.data.colonyNetwork),
-                    tokenAddress: ethAddressToBuffer(event.data.token),
+                    colonyAddress: ethAddressToBuffer(event.args.colonyNetwork),
+                    tokenAddress: ethAddressToBuffer(event.args.token),
                     tokenAuthorityAddress: ethAddressToBuffer("0x0"), // FIXME                  
                 },
             });
@@ -67,23 +68,14 @@ async function processEvent(prisma: PrismaClient, event: any, id: number, kind: 
 }
 
 async function processEvents(prisma: PrismaClient, blockNo: number, depth: number) {
-    const filter = await eventManager.createMultiFilter(colonyEventSource, [
-        'ColonyInitialised(address,address,address)',
-    ]);
-    const events = await eventManager.getMultiEvents(
-        [ filter ],
-        { fromBlock: blockNo - depth, toBlock: blockNo },
+    const txs = await prisma.transaction.findMany(
+        {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}, // TODO: Select fewer fields.
     );
-    for (const event of events) {
-        const dbRes = await prisma.transaction.findFirst({
-            select: { id: true, kind: true, blockChecked: true }, // TODO: Are all `select` args necessary?
-            where: { confirmed: false, tx: ethHashToBuffer(event.transactionHash) },
-        });
-        if (dbRes !== null) {
-            const { id, kind } = dbRes;
-            await processEvent(prisma, event, id, kind, event.transactionHash);
-            // TODO: Should use the function `NOW` instead of `new Date()`.
-            await prisma.transaction.update({where: {id}, data: {confirmed: true, blockChecked: blockNo, lastCheckedAt: new Date()}});
+    for (const transaction of txs) {
+        const txHash = await bufferToEthHash(transaction.tx);
+        const receipt = await ethProvider.getTransactionReceipt(txHash);
+        for (const event of receipt.logs) {
+            processEvent(prisma, event, transaction.id, transaction.kind, txHash);
         }
     }
 }
