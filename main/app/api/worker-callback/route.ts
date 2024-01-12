@@ -23,7 +23,7 @@ class StoreTxsServer {
     }
 }
 
-// FIXME: Make it per-connection
+// FIXME: Make it per-connection (or per-user?)
 export const txsDisplay: StoreTxsServer = new StoreTxsServer();
 
 export async function POST(req: Request, res: Response) {
