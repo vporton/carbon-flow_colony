@@ -17,7 +17,13 @@ export default async function Organization({
         select: {token: { select: { id: true } }, comment: true},
         where: { organizationId: { equals: id } },
     });
-    const tokens = tokens0.map((t: any) => { return {id: t.token.id, comment: t.comment} }); // TODO: `any`
+    const tokens1 = tokens0.map((t: any) => {
+      return {
+        id: t.token.id,
+        comment: t.comment,
+        // taxPromise: 
+      };
+    }); // TODO: `any`
 
     let colonyInfo = await prisma.organization.findFirstOrThrow({
       select: { name: true, colonyNickName: true, colonyAddress: true },

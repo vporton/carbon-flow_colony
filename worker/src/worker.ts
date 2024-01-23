@@ -97,7 +97,7 @@ async function processEvents(prisma: PrismaClient) {
     );
     for (const transaction of txs) {
         const txHash = await bufferToEthHash(transaction.tx);
-        const receipt = await ethProvider.getTransactionReceipt(txHash);
+        const receipt = await ethProvider.getTransactionReceipt(txHash); // TODO: Process in parallel.
         if (receipt) { // TODO: Should it be `receipt !== null` or `receipt !== undefined`? TypeScript types are contradictory!
             for (const event of receipt.logs) {
                 processEvent(prisma, event, transaction.id, transaction.kind, txHash);
