@@ -3,7 +3,7 @@ import { ColonyEventManager, ColonyNetwork, ColonyRpcEndpoint, Network } from "@
 import { getColonyNetworkClient } from '@colony/colony-js'; // TODO: Remove `@colony/colony-js` dependency.
 import { PrismaClient } from "@prisma/client";
 import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
-import { ethers, providers, utils } from "ethers";
+import { ethers } from "ethers";
 import { TransactionKind } from "@/../util/transactionKinds";
 import { bufferToEthHash, ethAddressToBuffer, ethHashToBuffer } from "@/../util/eth";
 import Semaphore from "@chriscdn/promise-semaphore";
@@ -34,12 +34,12 @@ async function worker() {
 }
 
 // FIXME: mutex (https://github.com/DirtyHairy/async-mutex)
-async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
+async function doProcessEvent(prisma: PrismaClient, log: ethers.Log, id: number, kind: TransactionKind, tx: string) {
     switch (kind) {
         case TransactionKind.CREATE_ORGANIZATION: {
             const abi = ["event ColonyInitialised(address agent, address colonyNetwork, address token)"];
-            const iface = new ethers.utils.Interface(abi); // TODO: Move it out of the loop.
-            const event = iface.parseLog(log);
+            const iface = new ethers.Interface(abi); // TODO: Move it out of the loop.
+            const event = iface.parseLog(log as unknown as {topics: string[], data: string});
 
             const {organizationName, colonyNickName, tokenName, tokenSymbol} =
                 await prisma.createNewOrganizationTransaction.findFirstOrThrow({
@@ -50,8 +50,8 @@ async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, i
                 data: {
                     name: organizationName,
                     colonyNickName,
-                    colonyAddress: ethAddressToBuffer(event.args.colonyNetwork),
-                    tokenAddress: ethAddressToBuffer(event.args.token),
+                    colonyAddress: ethAddressToBuffer(event!.args.colonyNetwork), // FIXME: `!`
+                    tokenAddress: ethAddressToBuffer(event!.args.token), // FIXME: `!`
                     tokenName,
                     tokenSymbol,
                 },
@@ -60,8 +60,8 @@ async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, i
         }
         case TransactionKind.CREATE_TOKEN: {
             const abi = ["event NewToken(uint256 indexed id, address indexed owner, string uri)"];
-            const iface = new ethers.utils.Interface(abi);
-            const event = iface.parseLog(log);
+            const iface = new ethers.Interface(abi);
+            const event = iface.parseLog(log as unknown as {topics: string[], data: string});
 
             const {organizationId, comment} = await prisma.createNewTokenTransaction.findFirstOrThrow({
                 select: {organizationId: true, comment: true},
@@ -79,7 +79,7 @@ async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, i
     }
 }
 
-async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
+async function processEvent(prisma: PrismaClient, log: ethers.Log, id: number, kind: TransactionKind, tx: string) {
     await doProcessEvent(prisma, log, id, kind, tx);
     fetch(process.env.BACKEND_URL+"/api/worker-callback", {
         method: 'POST',
@@ -88,7 +88,7 @@ async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id:
             'Content-Type': 'application/json',
             'Authorization': process.env.BACKEND_SECRET!,
         },          
-        body: JSON.stringify({tx, state: 'mined'}),
+        body: JSON.stringify({tx, state: 'mined'}), // FIXME: Pass here `userId`.
     }).then(() => {});
 }
 
