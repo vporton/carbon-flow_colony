@@ -14,7 +14,6 @@ export default async function Organization({
     const id0 = params!.id;
     const id = parseInt(id0 as string);
 
-    const tax = 0; // FIXME
     const prisma = new PrismaClient();
     const tokens0 = await prisma.organizationsTokens.findMany({
         select: {token: { select: { id: true } }, comment: true},
