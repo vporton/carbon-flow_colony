@@ -1,4 +1,4 @@
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 import { txsDisplay } from '../worker-callback/route';
 import { useSession } from 'next-auth/react';
 
@@ -15,7 +15,7 @@ const SocketHandler = (req: Request, res: Response) => {
     console.log('Socket is initializing');
     const io = new Server((res as any).socket.server);
     (res as any).socket.server.io = io;
-    io.on('connection', (socket: any) => { // FIXME: It typecheck errors if I write `socket: WebSocket`.
+    io.on('connection', (socket: Socket) => {
       txsDisplay[email!].addWebSocket(socket);
     });
   }
