@@ -15,7 +15,9 @@ const SocketHandler = (req: Request, res: Response) => {
     console.log('Socket is initializing');
     const io = new Server((res as any).socket.server);
     (res as any).socket.server.io = io;
-    txsDisplay[email!].addWebSocket((res as any).socket); // FIXME: or `socket.server` or `io`?
+    io.on('connection', (socket: any) => { // FIXME: It typecheck errors if I write `socket: WebSocket`.
+      txsDisplay[email!].addWebSocket(socket);
+    });
   }
   (res as any).end()
 }
