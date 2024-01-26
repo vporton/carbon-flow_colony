@@ -27,7 +27,6 @@ class StoreTxsServer {
     }
 }
 
-// FIXME: Make it per-connection (or per-user?)
 export const txsDisplay: { [user: string]: StoreTxsServer } = {}; //new StoreTxsServer();
 
 // TODO: Use. `onMined` or `onSubmitted`?
