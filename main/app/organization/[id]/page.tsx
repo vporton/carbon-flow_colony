@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import OrganizationInside from "@/../main/components/OrganizationInside";
+import { abi as CarbonAbi } from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.json";
+import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
+import { ethers } from "ethers";
 
 export default async function Organization({
     params,
@@ -17,13 +20,17 @@ export default async function Organization({
         select: {token: { select: { id: true } }, comment: true},
         where: { organizationId: { equals: id } },
     });
-    const tokens1 = tokens0.map((t: any) => {
-      return {
-        id: t.token.id,
-        comment: t.comment,
-        // taxPromise: 
-      };
-    }); // TODO: `any`
+    const contract = new ethers.Contract(CarbonInfo["31337"].address, CarbonAbi); // FIXME: Specify the chain.
+    const tokens1 = tokens0.map(t => ({
+      id: t.token.id,
+      comment: t.comment,
+      taxPromise: contract.taxes(t.token.id),
+    }));
+    const tokens = await Promise.all(tokens1.map(async t => ({
+      id: t.id,
+      comment: t.comment,
+      tax: await t.taxPromise,
+    })));
 
     let colonyInfo = await prisma.organization.findFirstOrThrow({
       select: { name: true, colonyNickName: true, colonyAddress: true },

@@ -2057,7 +2057,7 @@
 
 "@porton/carbon-flow@git+https://github.com/vporton/carbon-flow.git#main":
   version "0.0.1"
-  resolved "git+https://github.com/vporton/carbon-flow.git#7ebe48b64446a915fa3ffa77bba1e88656638e71"
+  resolved "git+https://github.com/vporton/carbon-flow.git#fa88e0619b5d973d88fa5f1bc5dc46107625d015"
   dependencies:
     "@myetherwallet/mewconnect-web-client" "^2.1.5-beta.1"
     "@nomiclabs/hardhat-ethers" "^2.0.2"
