@@ -5,11 +5,11 @@ import { useState } from "react";
 import { ColonyNetwork, SignerOrProvider } from '@colony/sdk';
 import { useWalletClient } from "wagmi";
 // import { useWalletClient } from 'wagmi';
+import { useEthersSigner } from "@/../../util/clientToSigner";
 import config from "@/../config.json";
 
 export default function CreateOrganization(props: {}) {
-    const { data: signer } = useWalletClient();
-    // useProvider()
+    const signer = useEthersSigner();
 
     const [busy, setBusy] = useState(false);
     const [colonyName, setColonyName] = useState("");
@@ -19,7 +19,7 @@ export default function CreateOrganization(props: {}) {
 
     function create() {
         async function doIt() {
-            const colonyNetwork = new ColonyNetwork(signer as unknown as SignerOrProvider); // FIXME
+            const colonyNetwork = new ColonyNetwork(signer!); // FIXME: `!`
 
             const _response = await fetch(config.BACKEND + "/api/organization/create", {
                 method: "POST",
