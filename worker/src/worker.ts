@@ -6,6 +6,7 @@ import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
 import { ethers, providers, utils } from "ethers";
 import { TransactionKind } from "@/../util/transactionKinds";
 import { bufferToEthHash, ethAddressToBuffer, ethHashToBuffer } from "@/../util/eth";
+import Semaphore from "@chriscdn/promise-semaphore";
 
 import express, { Express, Request, Response } from "express";
 
@@ -95,13 +96,21 @@ async function processEvents(prisma: PrismaClient) {
     const txs = await prisma.transaction.findMany(
         {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}, // TODO: Select fewer fields.
     );
+    const semaphore = new Semaphore(10);
     for (const transaction of txs) {
-        const txHash = await bufferToEthHash(transaction.tx);
-        const receipt = await ethProvider.getTransactionReceipt(txHash); // TODO: Process in parallel.
-        if (receipt) { // TODO: Should it be `receipt !== null` or `receipt !== undefined`? TypeScript types are contradictory!
-            for (const event of receipt.logs) {
-                processEvent(prisma, event, transaction.id, transaction.kind, txHash);
-            }
+        try {
+            await semaphore.acquire();
+            bufferToEthHash(transaction.tx).then(async txHash => {
+                const receipt = await ethProvider.getTransactionReceipt(txHash); // TODO: Process in parallel.
+                if (receipt) { // TODO: Should it be `receipt !== null` or `receipt !== undefined`? TypeScript types are contradictory!
+                    for (const event of receipt.logs) {
+                        processEvent(prisma, event, transaction.id, transaction.kind, txHash);
+                    }
+                }
+            });
+        }
+        finally {
+            semaphore.release();
         }
     }
 }
