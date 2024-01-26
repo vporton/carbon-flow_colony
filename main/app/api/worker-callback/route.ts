@@ -30,7 +30,7 @@ class StoreTxsServer {
 // FIXME: Make it per-connection (or per-user?)
 export const txsDisplay: { [user: string]: StoreTxsServer } = {}; //new StoreTxsServer();
 
-// TODO: Pass `userId` param.
+// TODO: Use. `onMined` or `onSubmitted`?
 export async function POST(req: Request, res: Response) {
     if (req.headers.get('Authorization') !== process.env.BACKEND_SECRET!) {
         return NextResponse.json({ error: "Allowed only by backend" }, { status: 403 });
