@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 import config from '@/../config.json';
 import { useEffect } from 'react';
 import { getServerSession } from 'next-auth';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default async function Organization(props: {}) {
     const prisma = new PrismaClient();

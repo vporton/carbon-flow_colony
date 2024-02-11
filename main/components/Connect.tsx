@@ -1,11 +1,9 @@
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
-import { InjectedConnector } from 'wagmi/connectors/injected'
+import { injected } from 'wagmi/connectors' 
 
 function Connect() {
   const { isConnected, address } = useAccount();
-  const { connect } = useConnect({
-    // connector: new InjectedConnector(), // FIXME: Uncomment? // TODO: Bug if MetaMask isn't installed.
-  });
+  const { connect } = useConnect();
   const { disconnect } = useDisconnect();
 
   if (isConnected) {
@@ -16,7 +14,9 @@ function Connect() {
       </>
     );
   } else {
-    return <button onClick={() => connect()}>Connect</button>
+    // TODO: Bug if MetaMask isn't installed.
+    const connector = injected({ target: 'metaMask' }) ;
+    return <button onClick={() => connect({connector})}>Connect</button>
   }
 }
 

@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import SubLayout from './_sublayout';
 import './globals.css';
 import { getServerSession } from 'next-auth';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const inter = Inter({ subsets: ['latin'] }) // TODO
 
@@ -18,6 +19,8 @@ export const metadata: Metadata = {
   title: 'Carbon Flow carbon accounting DAO',
   description: 'An app to account carbon',
 };
+
+const queryClient = new QueryClient();
 
 export default async function RootLayout({
   children,
@@ -28,10 +31,12 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="App">
-          <Container>
-            <h1>Carbon Flow carbon accounting DAO</h1>
-            <SubLayout>{children}</SubLayout>
-          </Container>
+          <QueryClientProvider client={queryClient}>
+            <Container>
+              <h1>Carbon Flow carbon accounting DAO</h1>
+              <SubLayout>{children}</SubLayout>
+            </Container>
+          </QueryClientProvider>
         </div>
       </body>
     </html>
