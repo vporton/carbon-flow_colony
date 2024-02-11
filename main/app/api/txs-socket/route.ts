@@ -20,16 +20,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ],
     callbacks: {
       session({ session, token, user, newSession, trigger }: {
-          session: Session;
-          token: JWT;
-          user: AdapterUser;
+        session: Session;
+        token: JWT;
+        user: AdapterUser;
       } & {
-          newSession: any;
-          trigger: "update";
+        newSession: any;
+        trigger: "update";
       }) {
         const email = user?.email;
         if (email === undefined) {
-            return session;
+          return session;
         }
       
         if ((res as any).socket.server.io) {
