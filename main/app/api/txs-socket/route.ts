@@ -1,46 +1,29 @@
 import { Server, Socket } from 'socket.io'
-import { txsDisplay } from '../worker-callback/route';
-import { useSession } from 'next-auth/react';
-import NextAuth, { Session } from 'next-auth';
+import { txsDisplay } from '@/../../util/workerClient';
+import NextAuth, { getServerSession } from 'next-auth';
 import GoogleProvider from "next-auth/providers/google"
 import config from "@/../config.json";
 import { NextApiRequest, NextApiResponse } from 'next';
-import { JWT } from 'next-auth/jwt';
-import { AdapterUser } from 'next-auth/adapters';
+import { NextRequest, NextResponse } from 'next/server';
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Do whatever you want here, before the request is passed down to `NextAuth`
-  return await NextAuth(req, res, {
-    providers: [ // FIXME: duplicate code
-        GoogleProvider({
-          clientId: config.GOOGLE_ID!,
-          clientSecret: config.GOOGLE_SECRET!,
-        }),
-        // TODO: add more providers here
-    ],
-    callbacks: {
-      session({ session, user }) {
-        const email = user?.email;
-        if (email === undefined) {
-          return session;
-        }
+async function handler(req: Request, res: Response) {
+  const session = await getServerSession();
+  const email = session?.user?.email;
+  if (email === undefined) {
+    return;
+  }
 
-        if ((res as any).socket.server.io) {
-          console.log('Socket is already running');
-        } else {
-          console.log('Socket is initializing');
-          const io = new Server((res as any).socket.server);
-          (res as any).socket.server.io = io;
-          io.on('connection', (socket: Socket) => {
-            txsDisplay.addWebSocket(socket, email!); // FIXME: `!`
-          });
-        }
-        (res as any).end();
-
-        return session;
-      }
-    }
-  })
+  if ((res as any).socket.server.io) {
+    console.log('Socket is already running');
+  } else {
+    console.log('Socket is initializing');
+    const io = new Server((res as any).socket.server);
+    (res as any).socket.server.io = io;
+    io.on('connection', (socket: Socket) => {
+      txsDisplay.addWebSocket(socket, email!); // FIXME: `!`
+    });
+  }
+  (res as any).end();
 }
 
 export { handler as GET };

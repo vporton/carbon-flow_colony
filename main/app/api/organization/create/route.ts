@@ -2,7 +2,7 @@ import { ethHashToBuffer, getTransactionHash } from "@/../util/eth";
 import { colonyNetwork } from "@/../util/serverSideEthConnect";
 import { TransactionKind } from "@/../util/transactionKinds";
 import { EthTxsContext } from "@/app/_sublayout2";
-import { txsDisplay } from "@/app/api/worker-callback/route";
+import { txsDisplay } from '@/../../util/workerClient';
 import EthExecuting from "@/components/EthExecuting";
 import { PrismaClient } from "@prisma/client";
 import { assert } from "console";
@@ -27,7 +27,7 @@ export function POST(req: Request) {
     
         const tx = await colonyNetwork.createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName); // TODO: More parameters
         const txHash = await getTransactionHash(await tx.tx().encode());
-        txsDisplay[email!].onSubmitted(txHash, "create colony");
+        txsDisplay.onSubmitted(txHash, "create colony");
         console.log("txHash", txHash);
 
         const prisma = new PrismaClient();
