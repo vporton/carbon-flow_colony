@@ -19,14 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // TODO: add more providers here
     ],
     callbacks: {
-      session({ session, token, user, newSession, trigger }: {
-        session: Session;
-        token: JWT;
-        user: AdapterUser;
-      } & {
-        newSession: any;
-        trigger: "update";
-      }) {
+      session({ session, user }) {
         const email = user?.email;
         if (email === undefined) {
           return session;
