@@ -27,27 +27,24 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           newSession: any;
           trigger: "update";
       }) {
-        // FIXME: Uncomment.
-        // // Return a cookie value as part of the session
-        // // This is read when `req.query.nextauth.includes("session") && req.method === "GET"`
-        // const email = user?.email;
-        // if (email === undefined) {
-        //     return;
-        // }
+        const email = user?.email;
+        if (email === undefined) {
+            return session;
+        }
       
-        // if ((res as any).socket.server.io) {
-        //   console.log('Socket is already running');
-        // } else {
-        //   console.log('Socket is initializing');
-        //   const io = new Server((res as any).socket.server);
-        //   (res as any).socket.server.io = io;
-        //   io.on('connection', (socket: Socket) => {
-        //     txsDisplay.addWebSocket(socket, email!); // FIXME: `!`
-        //   });
-        // }
-        // (res as any).end();
+        if ((res as any).socket.server.io) {
+          console.log('Socket is already running');
+        } else {
+          console.log('Socket is initializing');
+          const io = new Server((res as any).socket.server);
+          (res as any).socket.server.io = io;
+          io.on('connection', (socket: Socket) => {
+            txsDisplay.addWebSocket(socket, email!); // FIXME: `!`
+          });
+        }
+        (res as any).end();
 
-        return session; // FIXME
+        return session;
       }
     }
   })
