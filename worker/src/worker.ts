@@ -9,6 +9,7 @@ import { bufferToEthHash, ethAddressToBuffer, ethHashToBuffer } from "@/../util/
 import Semaphore from "@chriscdn/promise-semaphore";
 
 import express, { Express, Request, Response } from "express";
+import { Session } from "inspector";
 
 const app: Express = express();
 const port = process.env.WORKER_PORT || 3001;
@@ -33,7 +34,7 @@ async function worker() {
     processEvents(prisma); // FIXME: Make configurable.
 }
 
-// FIXME: mutex (https://github.com/DirtyHairy/async-mutex)
+// TODO: mutex (https://github.com/DirtyHairy/async-mutex) not needed?
 async function doProcessEvent(prisma: PrismaClient, log: ethers.Log, id: number, kind: TransactionKind, tx: string) {
     switch (kind) {
         case TransactionKind.CREATE_ORGANIZATION: {
@@ -88,7 +89,7 @@ async function processEvent(prisma: PrismaClient, log: ethers.Log, id: number, k
             'Content-Type': 'application/json',
             'Authorization': process.env.BACKEND_SECRET!,
         },          
-        body: JSON.stringify({tx, state: 'mined'}), // FIXME: Pass here `userId`.
+        body: JSON.stringify({tx, state: 'mined', userId: FIXME}),
     }).then(() => {});
 }
 
