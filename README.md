@@ -4,6 +4,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Install a modern version of Node like:
+
+```bash
+nvm install v21.5.0
+nvm use v21.5.0
+```
+
 First, run the development server:
 
 ```bash

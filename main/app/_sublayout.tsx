@@ -5,13 +5,13 @@ import { createPublicClient, http } from 'viem'
 import { gnosis } from '@wagmi/chains'
 import type { AppProps } from 'next/app'
 import { createContext, useEffect, useState } from 'react'
-import { WagmiConfig, configureChains, createConfig } from 'wagmi'
+import { WagmiProvider, createConfig } from 'wagmi'
 // import { watchSigner } from '@wagmi/core'
 import { getDefaultProvider } from 'ethers'
 import { ColonyNetwork } from '@colony/sdk';
 import { SessionProvider, getSession, signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
-import { publicProvider } from 'wagmi/providers/public'
+// import { publicProvider } from 'wagmi/providers/public'
 import SubLayout2 from './_sublayout2'
 
 // const { publicClient } = configureChains([gnosis], [w3mProvider({ projectId: "" })])
@@ -23,14 +23,17 @@ import SubLayout2 from './_sublayout2'
 // const ethereumClient = new EthereumClient(wagmiConfig, [gnosis]);
 // const web3modal = new Web3Modal({ projectId }, ethereumClient)
 
-const { publicClient, webSocketPublicClient } = configureChains(
-  [gnosis],
-  [publicProvider()],
-);
+// const { publicClient, webSocketPublicClient } = configureChains(
+//   [gnosis],
+//   [/*publicProvider()*/],
+// );
 const config = createConfig({
-  publicClient,
-  webSocketPublicClient,
-  autoConnect: true,
+  chains: [gnosis],
+  transports: {
+    [gnosis.id]: http(),
+  },
+  // webSocketPublicClient,
+  // autoConnect: true,
 });
 // const web3modal = new Web3Modal({ projectId }, ethereumClient)
 
@@ -56,10 +59,10 @@ export default function SubLayout({ children }: { children: any }) { // TODO: ty
   }, []);
 
   return (
-    <WagmiConfig config={config}>
+    <WagmiProvider config={config}>
       <SessionProvider session={session}>
         <SubLayout2>{children}</SubLayout2>
       </SessionProvider>
-    </WagmiConfig>
+    </WagmiProvider>
   );
 }

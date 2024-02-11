@@ -4,7 +4,7 @@ import { InjectedConnector } from 'wagmi/connectors/injected'
 function Connect() {
   const { isConnected, address } = useAccount();
   const { connect } = useConnect({
-    connector: new InjectedConnector(), // TODO: Bug if MetaMask isn't installed.
+    // connector: new InjectedConnector(), // FIXME: Uncomment? // TODO: Bug if MetaMask isn't installed.
   });
   const { disconnect } = useDisconnect();
 

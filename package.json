@@ -35,7 +35,7 @@
     "esbuild": "^0.19.10",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.13",
-    "ethers": "^6.10.0",
+    "ethers": "^5.7.2",
     "html-entities": "^2.4.0",
     "next": "^14.0.4",
     "next-auth": "^4.23.0",
@@ -47,7 +47,7 @@
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6",
     "viem": "2.x",
-    "wagmi": "^2.5.2"
+    "wagmi": "^2.5.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
