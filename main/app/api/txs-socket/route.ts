@@ -8,7 +8,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { JWT } from 'next-auth/jwt';
 import { AdapterUser } from 'next-auth/adapters';
 
-export default async function auth(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Do whatever you want here, before the request is passed down to `NextAuth`
   return await NextAuth(req, res, {
     providers: [ // FIXME: duplicate code
@@ -49,10 +49,3 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     }
   })
 }
-
-
-
-// TODO: Compare to https://clouddevs.com/next/socketio-and-websocket-api/
-const handler = (req: Request, res: Response) => {
-}
-
