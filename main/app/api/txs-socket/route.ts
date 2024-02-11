@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (email === undefined) {
           return session;
         }
-      
+
         if ((res as any).socket.server.io) {
           console.log('Socket is already running');
         } else {
