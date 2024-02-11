@@ -20,8 +20,6 @@ export const metadata: Metadata = {
   description: 'An app to account carbon',
 };
 
-const queryClient = new QueryClient();
-
 export default async function RootLayout({
   children,
 }: {
@@ -31,12 +29,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="App">
-          <QueryClientProvider client={queryClient}>
-            <Container>
-              <h1>Carbon Flow carbon accounting DAO</h1>
-              <SubLayout>{children}</SubLayout>
-            </Container>
-          </QueryClientProvider>
+          <Container>
+            <h1>Carbon Flow carbon accounting DAO</h1>
+            <SubLayout>{children}</SubLayout>
+          </Container>
         </div>
       </body>
     </html>
