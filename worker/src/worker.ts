@@ -89,7 +89,7 @@ async function processEvent(prisma: PrismaClient, log: ethers.Log, id: number, k
             'Content-Type': 'application/json',
             'Authorization': process.env.BACKEND_SECRET!,
         },          
-        body: JSON.stringify({tx, state: 'mined', userId: FIXME}),
+        body: JSON.stringify({tx, state: 'mined'}),
     }).then(() => {});
 }
 
