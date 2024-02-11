@@ -2,7 +2,8 @@ import { Server, Socket } from 'socket.io'
 import { txsDisplay } from '../worker-callback/route';
 import { useSession } from 'next-auth/react';
 
-const SocketHandler = (req: Request, res: Response) => {
+// TODO: Compare to https://clouddevs.com/next/socketio-and-websocket-api/
+const handler = (req: Request, res: Response) => {
   const session = useSession();
   const email = session.data?.user?.email;
   if (email === undefined) {
@@ -16,10 +17,10 @@ const SocketHandler = (req: Request, res: Response) => {
     const io = new Server((res as any).socket.server);
     (res as any).socket.server.io = io;
     io.on('connection', (socket: Socket) => {
-      txsDisplay[email!].addWebSocket(socket);
+      txsDisplay.addWebSocket(socket, email!); // FIXME: `!`
     });
   }
   (res as any).end()
 }
 
-export default SocketHandler;
+export default handler;
