@@ -12,7 +12,7 @@ export function clientToSigner(client: Client<Transport, Chain, Account>) {
   }
   // const provider = new BrowserProvider(transport, network)
   const provider = new providers.Web3Provider((window as any).ethereum);
-  const signer = new providers.JsonRpcSigner(undefined, provider/*, account.address*/); // FIXME: probably wrong
+  const signer = provider.getSigner(account.address);
   return signer;
 }
 
