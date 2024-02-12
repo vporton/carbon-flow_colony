@@ -3,17 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "concurrently \"npm run build:next\" \"npm run build:worker\"",
-    "start": "concurrently \"npm run start:next\" \"npm run start:worker\"",
-    "dev": "concurrently \"npm run dev:next\" \"npm run dev:worker\"",
-    "lint": "npm run lint:next && npm run lint:worker",
+    "build": "concurrently \"yarn run build:next\" \"yarn run build:worker\"",
+    "start": "concurrently \"yarn run start:next\" \"yarn run start:worker\"",
+    "dev": "concurrently \"yarn run dev:next\" \"yarn run dev:worker\"",
+    "lint": "yarn run lint:next && yarn run lint:worker",
     "build:next": "cd main && next build",
     "start:next": "cd main && next start",
     "dev:next": "cd main && next dev",
     "lint:next": "cd main && next lint",
     "build:worker": "cd worker && esbuild src/worker.ts --platform=node --bundle --minify --outfile=dist/worker.js",
-    "start:worker": "npm run build:worker && node --require dotenv/config worker/dist/worker.js",
-    "dev:worker": "npm run build:worker && nodemon --require dotenv/config worker/dist/worker.js",
+    "start:worker": "yarn run build:worker && node --require dotenv/config worker/dist/worker.js",
+    "dev:worker": "yarn run build:worker && nodemon --require dotenv/config worker/dist/worker.js",
     "lint:worker": "cd worker && eslint"
   },
   "dependencies": {
