@@ -4,7 +4,7 @@ import config from "@/../config.json";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { useState } from "react";
 
-export default function AutocompleteOrganization() {
+export default function AutocompleteOrganization(props: {onRefreshUserOrganizations?: () => void}) {
     const [autocompleteOptions, setAutocompleteOptions] = useState<{id: number, name: string}[]>([]);
     const [orgToJoin, setOrgToJoin] = useState<number | undefined>(undefined);
 
@@ -17,12 +17,8 @@ export default function AutocompleteOrganization() {
         });
     }
 
-    function refreshUserOrganizations() {
-        // TODO
-    }
-
     function joinOrganization(organizationId: number) {
-        fetch(config.BACKEND + "/join-organizations", {
+        fetch(config.BACKEND + "/api/organization/join", {
             method: "POST",
             cache: "no-cache",
             credentials: "include",
@@ -33,7 +29,9 @@ export default function AutocompleteOrganization() {
         })
             .then(response => {
                 if (response.status === 200) {
-                    refreshUserOrganizations();
+                    if (props.onRefreshUserOrganizations !== undefined) {
+                        props.onRefreshUserOrganizations();
+                    }
                 }
             });
     }
