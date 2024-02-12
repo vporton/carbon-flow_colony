@@ -44,14 +44,13 @@ export default function CreateOrganization(props: {}) {
             <h2>Create organization</h2>
             <p>Here you create an organization (<q>colony</q>) and its token (this token is <em>not</em> the carbon counting token).</p>
             <p><strong>Warning: After creating an organization, you cannot change the below data!</strong></p>
-            <p>Organization name:{" "}
-                <input value={colonyName} onChange={(e) => setColonyName(e.target.value)} disabled={busy}/>
-            </p>
-            <p>Organization nickname (recommended only lowercase letters):{" "}
-                <input value={colonyNickName} onChange={(e) => setColonyNickName(e.target.value)} disabled={busy}/>
-            </p>
-            <p>Token name: <input value={tokenName} onChange={(e) => setTokenName(e.target.value)} disabled={busy}/></p>
-            <p>Token symbol (recommended a short string of uppercase letters):{" "}
+                <p>Organization name:<br/>
+                <input value={colonyName} onChange={(e) => setColonyName(e.target.value)} disabled={busy}/></p>
+            <p>Organization nickname (recommended only lowercase letters):<br/>
+                <input value={colonyNickName} onChange={(e) => setColonyNickName(e.target.value)} disabled={busy}/></p>
+            <p>Token name:<br/>
+                <input value={tokenName} onChange={(e) => setTokenName(e.target.value)} disabled={busy}/></p>
+            <p>Token symbol (recommended a short string of uppercase letters):<br/>
                 <input value={tokenSymbol} onChange={(e) => setTokenSymbol(e.target.value)} disabled={busy}/></p>
             <p>
                 <Button disabled={busy || (colonyNickName === '' || tokenName === '' || tokenSymbol === '')} onClick={create}>Create</Button>
