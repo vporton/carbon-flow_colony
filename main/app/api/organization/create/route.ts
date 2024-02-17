@@ -28,7 +28,6 @@ export function POST(req: Request) {
         const tx = await colonyNetwork.createColony({ name: tokenName, symbol: tokenSymbol }, colonyNickName); // TODO: More parameters
         const txHash = await getTransactionHash(await tx.tx().encode());
         txsDisplay.onSubmitted(txHash, "create colony");
-        console.log("txHash", txHash);
 
         const prisma = new PrismaClient();
         // TODO: database transaction
