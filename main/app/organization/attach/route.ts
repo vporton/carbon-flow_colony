@@ -1,29 +1,20 @@
-import { ethAddressToBuffer } from "@/../util/eth";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
-// TODO
+export async function POST(req: Request) {
+    const session = await getServerSession();
+    const userEmail = session!.user!.email as string;
+    const j = await req.json()
+    const organizationId = j.organizationId as number;
 
-// export async function POST(req: Request) {
-//     const j = await req.json()
-//     const data: {
-//         name: string,
-//         colonyNickName: string,
-//         // colonyAddress: Buffer,
-//         // tokenAddress: Buffer,
-//         // tokenAuthorityAddress: Buffer,
-//     } = {
-//         name: j.name,
-//         colonyNickName: j.colonyNickName,
-//         colonyAddress: ethAddressToBuffer(j.colonyAddress),
-//         tokenAddress: ethAddressToBuffer(j.tokenAddress),
-//         tokenAuthorityAddress: ethAddressToBuffer(j.tokenAuthorityAddress),
-//     };
-//     const session = await getServerSession();
-//     const userEmail = session!.user!.email as string;
-//     const prisma = new PrismaClient();
-//     let org = await prisma.organization.create({data});
-//     await prisma.organizationsUsers.create({data: {userEmail, organizationId: org.id}});
-//     return NextResponse.json({});
-// }
+    const prisma = new PrismaClient();
+    await prisma.organizationsUsers.create({
+        data: {
+            userEmail,
+            organizationId,
+        },
+    });
+
+    return NextResponse.json({});
+}
