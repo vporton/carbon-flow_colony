@@ -35,11 +35,11 @@ async function worker() {
 }
 
 // TODO: mutex (https://github.com/DirtyHairy/async-mutex) not needed?
-async function doProcessEvent(prisma: PrismaClient, log: ethers.Log, id: number, kind: TransactionKind, tx: string) {
+async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
     switch (kind) {
         case TransactionKind.CREATE_ORGANIZATION: {
             const abi = ["event ColonyInitialised(address agent, address colonyNetwork, address token)"];
-            const iface = new ethers.Interface(abi); // TODO: Move it out of the loop.
+            const iface = new ethers.utils.Interface(abi); // TODO: Move it out of the loop.
             const event = iface.parseLog(log as unknown as {topics: string[], data: string});
 
             const {organizationName, colonyNickName, tokenName, tokenSymbol} =
@@ -80,7 +80,7 @@ async function doProcessEvent(prisma: PrismaClient, log: ethers.Log, id: number,
     }
 }
 
-async function processEvent(prisma: PrismaClient, log: ethers.Log, id: number, kind: TransactionKind, tx: string) {
+async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id: number, kind: TransactionKind, tx: string) {
     await doProcessEvent(prisma, log, id, kind, tx);
     fetch(process.env.BACKEND_URL+"/api/worker-callback", {
         method: 'POST',
