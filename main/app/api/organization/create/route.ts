@@ -49,16 +49,5 @@ export function POST(req: Request) {
     doIt().then(() => {});
     // console.assert(tx2.hash === txHash, "Programming error: hashes don't match: %s !== %s", txHash, tx2.hash); // This fails!
 
-    // // TODO: (should be `await` before `waitForCreateOrganizationConfirmed`?)
-    // waitForCreateOrganizationConfirmed(tx.hash);
-    // // const [{
-    // //     tokenAddress,
-    // //     colonyId,
-    // //     colonyAddress,
-    // //     token,
-    // //     tokenAuthorityAddress,
-    // //     metadata,
-    // // }, parsedLogTransactionReceipt] = await promise();
-
     return NextResponse.json({});
 }
