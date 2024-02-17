@@ -7,8 +7,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 Install a modern version of Node like:
 
 ```bash
-nvm install v21.5.0
-nvm use v21.5.0
+nvm install v18.19.1
+nvm use v18.19.1
 ```
 
 First, run the development server:
