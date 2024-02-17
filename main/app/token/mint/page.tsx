@@ -17,5 +17,5 @@ export default async function Mint({
     });
     const tokens = tokens0.map((t: any) => { return {id: t.token.id, comment: t.comment} }); // TODO: `any`
 
-    return <MintInside tokens={tokens}/>
+    return <MintInside tokens={tokens} organization={params.organizationId}/>
 }

@@ -19,7 +19,7 @@ export default async function Organization({
         select: {token: { select: { id: true } }, comment: true},
         where: { organizationId: { equals: id } },
     });
-    const contract = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain.
+    const contract = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain. // TODO: duplicate code
     const tokens1 = tokens0.map(t => ({
       id: t.token.id,
       comment: t.comment,
