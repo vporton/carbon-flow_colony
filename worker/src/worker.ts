@@ -94,6 +94,7 @@ async function processEvent(prisma: PrismaClient, log: ethers.providers.Log, id:
     }).then(() => {});
 }
 
+// FIXME: Check for race conditions in backend code that creates transactions.
 async function processEvents(prisma: PrismaClient) {
     const txs = await prisma.transaction.findMany(
         {select: {id: true, tx: true, kind: true, blockChecked: true}, where: {confirmed: false}}, // TODO: Select fewer fields.
