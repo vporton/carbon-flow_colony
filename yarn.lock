@@ -2339,6 +2339,11 @@
   dependencies:
     "@prisma/debug" "5.7.1"
 
+"@prisma/nextjs-monorepo-workaround-plugin@^5.9.1":
+  version "5.9.1"
+  resolved "https://registry.yarnpkg.com/@prisma/nextjs-monorepo-workaround-plugin/-/nextjs-monorepo-workaround-plugin-5.9.1.tgz#c28d718484cf3c947eb3b45c743cc951d7b87cac"
+  integrity sha512-eyhfdkGUtUyz8BxKocgl953KuC5WWLxL+EC2aJBUSSozh+l/COg1FjvCa4fGeNbiJPdFnBPybv5+M52jc+vV6Q==
+
 "@react-native-async-storage/async-storage@^1.17.11":
   version "1.21.0"
   resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.21.0.tgz#d7e370028e228ab84637016ceeb495878b7a44c8"
