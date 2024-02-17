@@ -54,7 +54,7 @@ export default function SubLayout({ children }: { children: any }) { // TODO: ty
   useEffect(() => {
     getSession().then(s => {
       console.log("setSession");
-      setSession(s!)
+      s !== undefined && setSession(s!);
     });
   }, []);
 
