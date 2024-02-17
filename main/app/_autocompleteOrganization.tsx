@@ -17,6 +17,7 @@ export default function AutocompleteOrganization(props: {onRefreshUserOrganizati
         });
     }
 
+    // TODO: unjoin organizations
     function joinOrganization(organizationId: number) {
         fetch(config.BACKEND + "/api/organization/join", {
             method: "POST",
