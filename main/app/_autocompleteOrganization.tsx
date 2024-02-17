@@ -9,7 +9,7 @@ export default function AutocompleteOrganization(props: {onRefreshUserOrganizati
     const [orgToJoin, setOrgToJoin] = useState<number | undefined>(undefined);
 
     function onAutocompleteInputChange(event: any, value: string, reason: any) {
-        fetch(config.BACKEND + `/organization/search`,
+        fetch(config.BACKEND + `/api/organization/search`,
         {
             body: JSON.stringify({max: 15, prefix: `${encodeURIComponent(value)}`})
         }).then(async (res) => {
