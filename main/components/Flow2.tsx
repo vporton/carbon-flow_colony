@@ -31,7 +31,7 @@ export default function Flow2(props: {parentId: number, childId: number}) {
         }
         const oldLimitHash = calculateHash(swapLimit);
 
-        let action;
+        let action: ethers.PopulatedTransaction;
         switch (kind) {
             case 'simple':
                 action = await carbon.populateTransaction.setNonRecurringFlow(
