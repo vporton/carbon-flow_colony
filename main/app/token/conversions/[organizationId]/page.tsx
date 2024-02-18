@@ -49,7 +49,7 @@ export default async function Conversions({
                         <li><Link href={`token/flow/${parent.id}/new`}>Add new child</Link></li>
                     </ul>
                 </li>
-            )}            
+            )}
         </ul>
     );
 }
