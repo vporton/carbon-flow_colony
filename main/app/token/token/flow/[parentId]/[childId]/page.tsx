@@ -6,5 +6,5 @@ import { useState } from "react"
 import DatePicker from "react-datepicker";
 
 export default function Flow0(params: {parentId: number}) {
-    return Flow2(params);
+    return Flow2({...params, childId: undefined});
 }
