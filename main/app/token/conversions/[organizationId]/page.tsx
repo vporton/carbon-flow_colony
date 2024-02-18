@@ -40,7 +40,7 @@ export default async function Conversions({
                     <ul>
                         {parent.childs.map(child =>
                             <li key={child.tokenId}>
-                                <Link href={`conversion/${child.tokenId}`}>Token {child.tokenId} {child.comment !== undefined ? `(${child.comment})` : ""}</Link>
+                                <Link href={`/token/flow/${parent.id}/${child.tokenId}`}>Token {child.tokenId} {child.comment !== undefined ? `(${child.comment})` : ""}</Link>
                                 <Button>Reset and remove child</Button> {/* TODO */}
                                 <Button>Pause child</Button> {/* TODO: Give control to Recovery persons, using a special proxy contract handling dependencies. */}
                                 <Button>Unpause child</Button>
