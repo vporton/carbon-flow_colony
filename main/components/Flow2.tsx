@@ -1,7 +1,7 @@
 "use client";
 
 import { ethers } from "ethers";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import DatePicker from "react-datepicker";
 import config from "@/../config.json";
 import { Button } from "@mui/material";
@@ -17,10 +17,25 @@ export default function Flow2(props: {parentId: number, childId: number}) {
     const [remaining, setRemaining] = useState<ethers.BigNumber>(ethers.utils.parseEther('0'));
     const [period, setPeriod] = useState<number>(0);
 
+    const carbon = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain. // TODO: duplicate code
+
+    useEffect(() => {
+        // TODO: tokenFlow is retrieved by network twice in this component.
+        carbon.methods.tokenFlow(props.childId, props.parentId)
+            .then((tokenFlow: any) => {
+                const limit = tokenFlow.limit;
+                setKind(limit.recurring ? 'recurring' : 'simple');
+                setStart(limit.firstTimeEnteredSwapCredit);
+                setCredit(limit.initialSwapCredit);
+                setRemaining(tokenFlow.remainingSwapCredit);
+                setPeriod(limit.swapCreditPeriod);
+            });
+
+    }, []);
+
     async function submit() {
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
         // TODO: Should display transaction popup?
-        const carbon = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain. // TODO: duplicate code
 
         const tokenFlow = await carbon.methods.tokenFlow(props.childId, props.parentId);
         const swapLimit = tokenFlow.limit;
