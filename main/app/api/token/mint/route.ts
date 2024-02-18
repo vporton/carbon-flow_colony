@@ -13,6 +13,7 @@ import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
 import { ethers } from "ethers";
 
 // FIXME: Here and in other places use `.motion()` instead of `.metaTx`.
+// TODO: This can be done in frontend.
 export function POST(req: Request) {
     async function doIt() {
         const j = await req.json();
@@ -35,7 +36,7 @@ export function POST(req: Request) {
         await colony.makeArbitraryTransaction(
             CarbonInfo["31337"].address, // TODO
             serializedAction,
-        ).motion();
+        ).motion().send();
     }
     doIt();
     return NextResponse.json({});

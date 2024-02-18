@@ -1,6 +1,8 @@
 - We will add a child token only together with calling the ERC-1155 contract setting relationship.
   On removal of a child token, we will reset conversion to zero.
 
+- Motion "will only work if the VotingReputation extension is installed for the Colony that's being acted on"
+
 - Refuse empty login or password.
 
 - Introduce string length limits to reduce spam.

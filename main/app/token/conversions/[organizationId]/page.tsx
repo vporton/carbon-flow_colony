@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { useSearchParams } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
+import Link from "next/link";
 
 export default async function Conversions({
     params,
@@ -39,11 +40,13 @@ export default async function Conversions({
                     <ul>
                         {parent.childs.map(child =>
                             <li key={child.tokenId}>
-                                <a href={`conversion/${child.tokenId}`}>Token {child.tokenId} {child.comment !== undefined ? `(${child.comment})` : ""}</a>
-                                <Button>Reset and remove child</Button>
+                                <Link href={`conversion/${child.tokenId}`}>Token {child.tokenId} {child.comment !== undefined ? `(${child.comment})` : ""}</Link>
+                                <Button>Reset and remove child</Button> {/* TODO */}
+                                <Button>Pause child</Button> {/* TODO: Give control to Recovery persons, using a special proxy contract handling dependencies. */}
+                                <Button>Unpause child</Button>
                             </li>
                         )}
-                        <li><Button>Add new child</Button></li>
+                        <li><Link href={`token/flow/${parent.id}/new`}>Add new child</Link></li>
                     </ul>
                 </li>
             )}            

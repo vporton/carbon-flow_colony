@@ -28,7 +28,7 @@ export function POST(req: Request) {
         const tx = await colony.makeArbitraryTransaction(
             CarbonInfo["31337"].address, // TODO
             serializedAction,
-        ).motion();
+        ).motion().send();
         const txHash = ethers.utils.keccak256(await tx.encode());
         txsDisplay.onSubmitted(txHash, "create token");
 
