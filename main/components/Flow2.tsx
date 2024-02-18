@@ -30,8 +30,7 @@ export default function Flow2(props: {parentId: number, childId: number}) {
                 setRemaining(tokenFlow.remainingSwapCredit);
                 setPeriod(limit.swapCreditPeriod);
             });
-
-    }, []);
+    }, [carbon.methods, props.childId, props.parentId]);
 
     async function submit() {
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
