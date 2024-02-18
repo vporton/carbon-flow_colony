@@ -10,7 +10,8 @@ import { bufferToEthAddress } from "../../util/eth";
 import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.json";
 import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
 
-export default function Flow2(props: {parentId: number, childId: number}) {
+export default function Flow2(props: {parentId: number, childId: number | undefined}) {
+    const [currentChildId, setCurrentChildId] = useState(props.childId);
     const [kind, setKind] = useState<'simple' | 'recurring'>('simple');
     const [start, setStart] = useState<Date | undefined>(undefined);
     const [credit, setCredit] = useState<ethers.BigNumber>(ethers.utils.parseEther('0'));
@@ -21,7 +22,7 @@ export default function Flow2(props: {parentId: number, childId: number}) {
 
     useEffect(() => {
         // TODO: tokenFlow is retrieved by network twice in this component.
-        carbon.methods.tokenFlow(props.childId, props.parentId)
+        carbon.methods.tokenFlow(currentChildId, props.parentId)
             .then((tokenFlow: any) => {
                 const limit = tokenFlow.limit;
                 setKind(limit.recurring ? 'recurring' : 'simple');
@@ -30,13 +31,13 @@ export default function Flow2(props: {parentId: number, childId: number}) {
                 setRemaining(tokenFlow.remainingSwapCredit);
                 setPeriod(limit.swapCreditPeriod);
             });
-    }, [carbon.methods, props.childId, props.parentId]);
+    }, [carbon.methods, currentChildId, props.parentId]);
 
     async function submit() {
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
         // TODO: Should display transaction popup?
 
-        const tokenFlow = await carbon.methods.tokenFlow(props.childId, props.parentId);
+        const tokenFlow = await carbon.methods.tokenFlow(currentChildId, props.parentId);
         const swapLimit = tokenFlow.limit;
         function calculateHash(data: any) {
             return ethers.utils.solidityKeccak256(
@@ -65,7 +66,10 @@ export default function Flow2(props: {parentId: number, childId: number}) {
 
     return (
         <>
-            <p>Parent token: {props.parentId}. Child token: {props.childId}.</p> {/* TODO: Show token comments. */}
+            {/* TODO: Show token comments. */}
+            <p>Parent token: {props.parentId}. Child token:
+                {props.childId !== undefined ? props.childId :
+                    <input step={1} onChange={e => setCurrentChildId(parseInt((e.target as HTMLInputElement).value))}/>}.</p>
             <p>
                 <label><input type="radio" name="kind" value="simple" checked={kind === 'simple'} onClick={() => setKind('simple')}/>
                     {" "}Simple
