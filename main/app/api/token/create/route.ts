@@ -21,7 +21,7 @@ export function POST(req: Request) {
             organizationId: number, comment: string,
         } = j;
     
-        const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
+        const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi);
         const action = await contract.populateTransaction.createAuthority("uuid:TODO", "uuid:TODO");
         const serializedAction = ethers.utils.serializeTransaction(action);
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));

@@ -6,7 +6,7 @@ import { carbonTokenAddress } from "@/../util/data";
 
 export default function Tax(params: {tokenId: number}) {
     const [tax, setTax] = useState<number | undefined>();
-    const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
+    const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi);
     contract.methods.taxes(params.tokenId)
         .then((tax: ethers.BigNumber) => setTax(tax.toNumber() / (2**128)));
     async function update() {

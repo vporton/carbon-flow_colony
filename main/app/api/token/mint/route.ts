@@ -27,7 +27,7 @@ export function POST(req: Request) {
             { select: { colonyAddress: true }, where: {id: organizationId} });
 
         // TODO: Show tx popups also for transactions like this, that don't store in the DB.
-        const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
+        const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi);
         const action = await contract.populateTransaction.mint(to, token, amount, "");
         const serializedAction = ethers.utils.serializeTransaction(action);
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
