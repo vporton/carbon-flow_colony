@@ -25,7 +25,7 @@ export default function OrganizationInside(props: {
                         {" "}<Link href={`/token/tax/${t.id}`}>{t.tax.toNumber() / (2**128) * 100}% tax</Link>
                         {" "}<Link href={`/mint/${t.id}`}>mint</Link>,
                         <Link href={`/conversions/${t.id}`}>conversions</Link>,
-                        <Button onClick={() => removeToken(t.id)}>propose to remove</Button> {/* TODO: onClick */}
+                        <Button onClick={() => removeToken(t.id)}>propose to remove</Button>
                     </li>
                 )}
             </ul> : <p>(none)</p>}
