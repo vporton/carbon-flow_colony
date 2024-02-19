@@ -78,8 +78,8 @@ model Transaction {
   id                               Int                               @id @default(autoincrement())
   tx                               Bytes                             @unique
   createdAt                        DateTime                          @default(now())
-  blockChecked                     Int?
-  lastCheckedAt                    DateTime?
+  // blockChecked                     Int?
+  // lastCheckedAt                    DateTime?
   kind                             Int
   confirmed                        Boolean                           @default(false)
   AddExistingTokenTransaction      AddExistingTokenTransaction?
@@ -87,7 +87,7 @@ model Transaction {
   createNewToken                   CreateNewTokenTransaction?
 
   @@index([confirmed])
-  @@index([lastCheckedAt])
+  // @@index([lastCheckedAt])
 }
 
 model CreateNewTokenTransaction {
