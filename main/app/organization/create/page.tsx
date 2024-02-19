@@ -2,9 +2,6 @@
 
 import { Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
-import { ColonyNetwork, SignerOrProvider } from '@colony/sdk';
-import { useWalletClient } from "wagmi";
-// import { useWalletClient } from 'wagmi';
 import { useEthersSigner } from "@/../../util/clientToSigner";
 import config from "@/../config.json";
 
