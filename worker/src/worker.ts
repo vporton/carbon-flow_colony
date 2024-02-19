@@ -32,7 +32,7 @@ async function worker() {
     eventManager.provider.on('block', async (no: number) => {
         await processEvents(prisma);
     });
-    processEvents(prisma); // FIXME: Make configurable.
+    processEvents(prisma);
 }
 
 // TODO: mutex (https://github.com/DirtyHairy/async-mutex) not needed?
