@@ -1,10 +1,6 @@
 import { Server, Socket } from 'socket.io'
 import { txsDisplay } from '@/../../util/workerClient';
-import NextAuth, { getServerSession } from 'next-auth';
-import GoogleProvider from "next-auth/providers/google"
-import config from "@/../config.json";
-import { NextApiRequest, NextApiResponse } from 'next';
-import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
 
 async function handler(req: Request, res: Response) {
   const session = await getServerSession();

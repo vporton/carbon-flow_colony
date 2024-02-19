@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google"
 import config from "@/../config.json";
 
 const handler = NextAuth({
-    providers: [ // FIXME:: duplicate code
+    providers: [
         GoogleProvider({
           clientId: config.GOOGLE_ID!,
           clientSecret: config.GOOGLE_SECRET!,
