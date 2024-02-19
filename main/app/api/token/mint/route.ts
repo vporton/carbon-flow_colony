@@ -12,7 +12,6 @@ import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.js
 import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
 import { ethers } from "ethers";
 
-// FIXME: Here and in other places use `.motion()` instead of `.metaTx`.
 // TODO: This can be done in frontend.
 export function POST(req: Request) {
     async function doIt() {
