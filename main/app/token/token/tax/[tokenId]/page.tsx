@@ -2,11 +2,11 @@ import { Button } from "@mui/material";
 import { ethers } from "ethers";
 import { useState } from "react";
 import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.json";
-import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
+import { carbonTokenAddress } from "@/../util/data";
 
 export default function Tax(params: {tokenId: number}) {
     const [tax, setTax] = useState<number | undefined>();
-    const contract = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain. // TODO: duplicate code
+    const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
     contract.methods.taxes(params.tokenId)
         .then((tax: ethers.BigNumber) => setTax(tax.toNumber() / (2**128)));
     async function update() {

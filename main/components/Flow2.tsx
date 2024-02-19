@@ -8,7 +8,7 @@ import { Button } from "@mui/material";
 import { colonyNetwork } from "@/../util/serverSideEthConnect";
 import { bufferToEthAddress } from "../../util/eth";
 import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.json";
-import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
+import { carbonTokenAddress } from "@/../util/data";
 
 export default function Flow2(props: {parentId: number, childId: number | undefined}) {
     const [currentChildId, setCurrentChildId] = useState(props.childId);
@@ -18,7 +18,7 @@ export default function Flow2(props: {parentId: number, childId: number | undefi
     const [remaining, setRemaining] = useState<ethers.BigNumber>(ethers.utils.parseEther('0'));
     const [period, setPeriod] = useState<number>(0);
 
-    const carbon = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain. // TODO: duplicate code
+    const carbon = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
 
     useEffect(() => {
         // TODO: tokenFlow is retrieved by network twice in this component.
@@ -59,7 +59,7 @@ export default function Flow2(props: {parentId: number, childId: number | undefi
         }
         const serializedAction = ethers.utils.serializeTransaction(action);
         await colony.makeArbitraryTransaction(
-            CarbonInfo["31337"].address, // TODO
+            carbonTokenAddress, // TODO
             serializedAction,
         ).motion().send();
     }

@@ -9,7 +9,7 @@ import { assert } from "console";
 import { useSession } from "next-auth/react";
 import { NextResponse } from "next/server";
 import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.json";
-import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
+import { carbonTokenAddress } from "@/../util/data";
 import { ethers } from "ethers";
 
 // TODO: This can be done in frontend.
@@ -27,13 +27,13 @@ export function POST(req: Request) {
             { select: { colonyAddress: true }, where: {id: organizationId} });
 
         // TODO: Show tx popups also for transactions like this, that don't store in the DB.
-        const contract = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain. // TODO: duplicate code
+        const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
         const action = await contract.populateTransaction.mint(to, token, amount, "");
         const serializedAction = ethers.utils.serializeTransaction(action);
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
         // TODO: Should display transaction popup?
         await colony.makeArbitraryTransaction(
-            CarbonInfo["31337"].address, // TODO
+            carbonTokenAddress, // TODO
             serializedAction,
         ).motion().send();
     }

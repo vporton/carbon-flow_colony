@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { NextResponse } from "next/server";
 import { ethers } from "ethers";
 import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.json";
-import CarbonInfo from "@porton/carbon-flow/artifacts/Carbon.deployed.json";
+import { carbonTokenAddress } from "@/../util/data";
 
 export function POST(req: Request) {
     const session = useSession();
@@ -21,12 +21,12 @@ export function POST(req: Request) {
             organizationId: number, comment: string,
         } = j;
     
-        const contract = new ethers.Contract(CarbonInfo["31337"].address, Carbon.abi); // FIXME: Specify the chain. // TODO: duplicate code
+        const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
         const action = await contract.populateTransaction.createAuthority("uuid:TODO", "uuid:TODO");
         const serializedAction = ethers.utils.serializeTransaction(action);
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
         const tx = await colony.makeArbitraryTransaction(
-            CarbonInfo["31337"].address, // TODO
+            carbonTokenAddress, // TODO
             serializedAction,
         ).motion().send();
         const txHash = ethers.utils.keccak256(await tx.encode());
