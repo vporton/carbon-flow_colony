@@ -27,8 +27,7 @@ async function worker() {
 
     // TODO: Remove old events from the DB.
 
-    // TODO: What should be the order of the following two statements?
-    // FIXME: These two processEvents() may create duplicate data!
+    // These two processEvents() don't create duplicate data thanks to `prisma.$transaction`.
     eventManager.provider.on('block', async (no: number) => {
         await processEvents(prisma);
     });
