@@ -17,7 +17,6 @@ export default function AutocompleteOrganization(props: {onRefreshUserOrganizati
         });
     }
 
-    // TODO: unjoin organizations
     function joinOrganization(organizationId: number) {
         fetch(config.BACKEND + "/api/organization/join", {
             method: "POST",
@@ -26,7 +25,7 @@ export default function AutocompleteOrganization(props: {onRefreshUserOrganizati
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({organizationId}),
+            body: JSON.stringify({organizationId, flag: true}),
         })
             .then(response => {
                 if (response.status === 200) {
@@ -49,7 +48,7 @@ export default function AutocompleteOrganization(props: {onRefreshUserOrganizati
                     <TextField {...params} label="Organizations" variant="outlined" />
                 )}
             />
-            <Button disabled={orgToJoin === undefined} onClick={() => joinOrganization(orgToJoin!)}>Join</Button>
+            <Button disabled={orgToJoin === undefined} onClick={() => joinOrganization(orgToJoin!, true)}>Join</Button>
         </>
     );
 }

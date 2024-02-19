@@ -7,14 +7,26 @@ export async function POST(req: Request) {
     const userEmail = session!.user!.email as string;
     const j = await req.json()
     const organizationId = j.organizationId as number;
+    const flag = j.flag as boolean;
 
     const prisma = new PrismaClient();
-    await prisma.organizationsUsers.create({
-        data: {
-            userEmail,
-            organizationId,
-        },
-    });
+    if (flag) {
+        await prisma.organizationsUsers.create({
+            data: {
+                userEmail,
+                organizationId,
+            },
+        });
+    } else {
+        await prisma.organizationsUsers.delete({
+            where: {
+                organizationId_userEmail: {
+                    userEmail,
+                    organizationId,
+                },
+            },
+        });
+    }
 
     return NextResponse.json({});
 }

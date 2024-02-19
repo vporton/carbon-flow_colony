@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@mui/material";
+import { ethers } from "ethers";
 import { encode } from "html-entities";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ export default function OrganizationInside(props: {
     tokens: {
         id: number,
         comment: string,
-        tax: number,
+        tax: ethers.BigNumber,
     }[];
 }) {
     function removeToken(tokenId: number) {
