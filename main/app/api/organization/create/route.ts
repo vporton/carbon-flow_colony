@@ -30,7 +30,6 @@ export function POST(req: Request) {
         const dbTrans = await prisma.transaction.create({data: {
             tx: ethHashToBuffer(txHash),
             kind: TransactionKind.CREATE_ORGANIZATION,
-            confirmed: false,
         }});
         await prisma.createNewOrganizationTransaction.create({data: {
             id: dbTrans.id,
