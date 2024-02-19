@@ -22,7 +22,7 @@ export default function OrganizationInside(props: {
             <ul>
                 {props.tokens.map(t =>
                     <li key={t.id}>Token {t.id}/{t.id+1} {t.comment !== undefined ? `(${encode(t.comment)})` : ""}
-                        {" "}<Link href={`/token/tax/${t.id}`}>{t.tax * 100}% tax</Link>
+                        {" "}<Link href={`/token/tax/${t.id}`}>{t.tax.toNumber() / (2**128) * 100}% tax</Link>
                         {" "}<Link href={`/mint/${t.id}`}>mint</Link>,
                         <Link href={`/conversions/${t.id}`}>conversions</Link>,
                         <Button onClick={() => removeToken(t.id)}>propose to remove</Button> {/* TODO: onClick */}
