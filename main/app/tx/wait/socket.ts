@@ -51,6 +51,7 @@ class TxNotifier {
             }
 
             const tx = tx0 as Hash;
+            const tx2 = ethHashToBuffer(tx); // may throw
             this.addHash(ws, tx);
             hashes.push(tx);
 
@@ -59,7 +60,7 @@ class TxNotifier {
                 const prisma = new PrismaClient();
                 const alreadyHappened = !!await prisma.transaction.findFirst({
                     select: {id: true, },
-                    where: {tx: ethHashToBuffer(tx), confirmed: true}, // FIXME: `ethAddressToBuffer` may fail.
+                    where: {tx: tx2, confirmed: true},
                 });
                 if (alreadyHappened) {
                     this.deliver(tx);
