@@ -1,7 +1,9 @@
+// TODO: This file is unused.
+
+import { type Config, getClient } from '@wagmi/core'
 import { providers } from 'ethers'
 import { useMemo } from 'react'
 import type { Chain, Client, Transport } from 'viem'
-import { type Config, useWalletClient } from 'wagmi'
 
 export function clientToProvider(client: Client<Transport, Chain>) {
   const { chain, transport } = client
@@ -20,8 +22,10 @@ export function clientToProvider(client: Client<Transport, Chain>) {
   return new providers.JsonRpcProvider(transport.url, network)
 }
 
-/** Action to convert a viem Client to an ethers.js Provider. */
-export function useEthersProvider({ chainId }: { chainId?: number } = {}) {
-  const client = useWalletClient({ chainId })
-  return useMemo(() => clientToProvider(client!), [client]); // FIXME: `!`
+export function getEthersProvider(
+  config: Config,
+  { chainId }: { chainId?: number } = {},
+) {
+  const client = getClient(config, { chainId })
+  return clientToProvider(client)
 }
