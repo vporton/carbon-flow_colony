@@ -1,5 +1,6 @@
 import { ethAddressToBuffer, ethHashToBuffer } from '@/../util/eth';
 import { PrismaClient } from '@prisma/client';
+import { getServerSession } from 'next-auth';
 import { Server, Socket } from 'socket.io';
 import { Hash } from 'viem';
 
@@ -85,13 +86,16 @@ export let txNotifier: TxNotifier;
 
 // FIXME: https://stackoverflow.com/a/76278248/856090 may provide more correct code.
 function SocketHandler(req: Request, res: Response) {
-  if (txNotifier) {
-    console.log('Socket is already running');
-  } else {
-    console.log('Socket is initializing');
-    txNotifier = new TxNotifier((res as any).socket.server);
-  }
-  (res as any).end();
+    if (txNotifier) {
+        console.log('Socket is already running');
+    } else {
+        console.log('Socket is initializing');
+        const io = new Server((res as any).socket.server);
+        (res as any).socket.server.io = io; // by example of https://stackoverflow.com/a/76278248/856090
+        txNotifier = new TxNotifier((res as any).socket.server);
+    }
+    // TODO: Should use CORS middleware as in https://stackoverflow.com/a/76278248/856090?
+    (res as any).end();
 }
 
 export default SocketHandler;
