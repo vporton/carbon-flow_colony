@@ -52,8 +52,8 @@ async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, i
                 data: {
                     name: organizationName,
                     colonyNickName,
-                    colonyAddress: ethAddressToBuffer(event!.args.colonyNetwork), // FIXME: `!`
-                    tokenAddress: ethAddressToBuffer(event!.args.token), // FIXME: `!`
+                    colonyAddress: ethAddressToBuffer(event.args.colonyNetwork),
+                    tokenAddress: ethAddressToBuffer(event.args.token),
                     tokenName,
                     tokenSymbol,
                 },
