@@ -4,10 +4,7 @@ import { getServerSession } from 'next-auth';
 
 async function handler(req: Request, res: Response) {
   const session = await getServerSession();
-  const email = session?.user?.email;
-  if (email === undefined) {
-    return;
-  }
+  const email = session!.user!.email;
 
   if ((res as any).socket.server.io) {
     console.log('Socket is already running');
@@ -16,7 +13,7 @@ async function handler(req: Request, res: Response) {
     const io = new Server((res as any).socket.server);
     (res as any).socket.server.io = io;
     io.on('connection', (socket: Socket) => {
-      txsDisplay.addWebSocket(socket, email!); // FIXME: `!`
+      txsDisplay.addWebSocket(socket, email!);
     });
   }
   (res as any).end();
