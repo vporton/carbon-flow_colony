@@ -19,8 +19,6 @@ export default function CreateOrganization(props: {}) {
 
     function create() {
         async function doIt() {
-            const colonyNetwork = new ColonyNetwork(signer!); // FIXME: `!`
-
             const _response = await fetch(config.BACKEND + "/api/organization/create", {
                 method: "POST",
                 cache: "no-cache",
