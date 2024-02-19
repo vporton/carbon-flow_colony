@@ -18,6 +18,7 @@ export default function MintInside(props: {
     const [token, setToken] = useState<bigint | undefined>(undefined);
     const [amount, setAmount] = useState<bigint | undefined>(undefined);
 
+    // TODO: This can be done in frontend.
     async function mint() {
         fetch(config.BACKEND + "/api/token/mint", {
             method: "POST",
