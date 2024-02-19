@@ -84,7 +84,6 @@ class TxNotifier {
 
 export let txNotifier: TxNotifier;
 
-// FIXME: https://stackoverflow.com/a/76278248/856090 may provide more correct code.
 function SocketHandler(req: Request, res: Response) {
     if (txNotifier) {
         console.log('Socket is already running');
