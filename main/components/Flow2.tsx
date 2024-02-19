@@ -18,7 +18,7 @@ export default function Flow2(props: {parentId: number, childId: number | undefi
     const [remaining, setRemaining] = useState<ethers.BigNumber>(ethers.utils.parseEther('0'));
     const [period, setPeriod] = useState<number>(0);
 
-    const carbon = new ethers.Contract(carbonTokenAddress, Carbon.abi); // FIXME: Specify the chain.
+    const carbon = new ethers.Contract(carbonTokenAddress, Carbon.abi);
 
     useEffect(() => {
         // TODO: tokenFlow is retrieved by network twice in this component.
