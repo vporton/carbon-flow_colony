@@ -48,7 +48,7 @@ export default function MintInside(props: {
             )}
             </select>
         </p>
-        <p>Amount: <EthAmount value={amount} onChange={setAmount}/></p> {/* FIXME: not in wei */}
+        <p>Amount: <EthAmount value={amount} onChange={setAmount}/></p>
         <p><Button onClick={mint} disabled={token !== undefined && amount !== undefined}>Mint!</Button></p>
     </>
 }
