@@ -11,7 +11,7 @@ export default function Tax(props: {tokenId: number}) {
     contract.methods.taxes(props.tokenId)
         .then((tax: ethers.BigNumber) => setTax(tax.toNumber() / (2**128)));
     async function update() {
-        fetch(config.BACKEND + "/api/token/setTax", {
+        fetch(config.BACKEND + "/api/token/setTax", { // TODO: Implement in backend.
             method: "POST",
             cache: "no-cache",
             credentials: "include",
