@@ -61,7 +61,7 @@ export default function Flow2(props: {parentId: number, childId: number | undefi
         await colony.makeArbitraryTransaction(
             carbonTokenAddress, // TODO
             serializedAction,
-        ).motion().send();
+        ).metaMotion().send();
     }
 
     return (

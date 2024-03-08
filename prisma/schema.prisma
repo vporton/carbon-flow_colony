@@ -87,6 +87,7 @@ model Transaction {
   CreateNewOrganizationTransaction CreateNewOrganizationTransaction?
   createNewToken                   CreateNewTokenTransaction?
   removeToken                      RemoveTokenTransaction?
+  setTax                           SetTaxTransaction?
 
   @@index([confirmed])
   // @@index([lastCheckedAt])
@@ -126,6 +127,16 @@ model CreateNewOrganizationTransaction {
   colonyNickName   String
   organizationName String
   transaction      Transaction @relation(fields: [id], references: [id])
+}
+
+model SetTaxTransaction {
+  id             Int         @id @default(autoincrement())
+  organizationId Int
+  tokenId        Int
+  tax            String
+  transaction    Transaction @relation(fields: [id], references: [id])
+
+  @@index([organizationId, tokenId])
 }
 
 // TODO: `AddExistingOrganizationTransaction`

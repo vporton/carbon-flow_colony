@@ -10,9 +10,6 @@ import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.js
 import { carbonTokenAddress } from "@/../util/data";
 
 export function POST(req: Request) {
-    const session = useSession();
-    const email = session!.data!.user!.email;
-
     async function doIt() {
         const j = await req.json();
         const {
@@ -28,7 +25,7 @@ export function POST(req: Request) {
         const tx = await colony.makeArbitraryTransaction(
             carbonTokenAddress, // TODO
             serializedAction,
-        ).motion().send();
+        ).metaMotion().send();
         const txHash = ethers.utils.keccak256(await tx.encode());
         txsDisplay.onSubmitted(txHash, "create token");
 

@@ -38,7 +38,7 @@ export function POST(req: Request) {
             colonyNickName,
             organizationName,
         }});
-        const [tx2, _promise] = await tx.metaTx().send();
+        const [tx2, _promise] = await tx.metaMotion().send();
     }
     doIt().then(() => {});
     // console.assert(tx2.hash === txHash, "Programming error: hashes don't match: %s !== %s", txHash, tx2.hash); // This fails!

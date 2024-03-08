@@ -10,9 +10,10 @@ export async function POST(req: Request) {
         const { organizationId, tokenId } = await req.json();
 
         const prisma = new PrismaClient();
-        const { colonyAddress } = await prisma.organization.findUniqueOrThrow({ select: {colonyAddress: true}, where: {id: props.colonyId} });
+        const { colonyAddress } = await prisma.organization.findUniqueOrThrow({ select: {colonyAddress: true}, where: {id: organizationId} });
+        const { comment: tokenComment } = await prisma.token.findUniqueOrThrow({ select: {comment: true}, where: {id: tokenId} });
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
-        const [, tx] = await colony.ext.motions!.createDecision().metaTx().send(); // FIXME: Install the extension
+        const [, tx] = await colony.ext.motions!.createDecision().metaMotion().send(); // FIXME: Install the extension
         const txHash = (await tx())[1].transactionHash;
         await colony.ext.motions!.annotateDecision(
             txHash,
