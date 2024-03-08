@@ -76,6 +76,24 @@ async function doProcessEvent(prisma: PrismaClient, log: ethers.providers.Log, i
                     comment,
                 },
             });
+            break;
+        }
+        case TransactionKind.REMOVE_TOKEN: {
+            // const abi = ["event NewToken(uint256 indexed id, address indexed owner, string uri)"];
+            // const iface = new ethers.utils.Interface(abi);
+            // const event = iface.parseLog(log as unknown as {topics: string[], data: string});
+
+            const {organizationId, tokenId} = await prisma.removeTokenTransaction.findUniqueOrThrow({
+                select: {organizationId: true, tokenId: true},
+                where: {id},
+            });
+            await prisma.organizationsTokens.delete({
+                where: {
+                    organizationId,
+                    tokenId,
+                },
+            });
+            break;
         }
     }
 }

@@ -72,7 +72,7 @@ export default function Organization({
             {/* TODO: Ask confirmation for unjoin. */}
             <p>Name: {colonyInfo === undefined ? "(loading)" : colonyInfo.name} <Button onClick={() => unjoinOrganization()}>Unjoin</Button></p>
             <p><a href={colonyInfo === undefined ? undefined : `https://xdai.colony.io/colony/${encodeURIComponent(colonyInfo.colonyNickName)}`}>Colony link</a></p>
-            <OrganizationInside tokens={tokens}/>
+            <OrganizationInside tokens={tokens} colonyId={id}/>
        </>
     );
 }

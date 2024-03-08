@@ -15,11 +15,12 @@ model Organization {
   tokenAddress                Bytes
   tokenName                   String
   tokenSymbol                 String
-  AddExistingTokenTransaction AddExistingTokenTransaction[]
   ChildToken                  ChildToken[]
-  CreateNewTokenTransaction   CreateNewTokenTransaction[]
   tokens                      OrganizationsTokens[]
   users                       OrganizationsUsers[]
+  CreateNewTokenTransaction   CreateNewTokenTransaction[]
+  AddExistingTokenTransaction AddExistingTokenTransaction[]
+  removeTokenTransaction      RemoveTokenTransaction[]
 
   @@index([colonyNickName])
 }
@@ -85,6 +86,7 @@ model Transaction {
   AddExistingTokenTransaction      AddExistingTokenTransaction?
   CreateNewOrganizationTransaction CreateNewOrganizationTransaction?
   createNewToken                   CreateNewTokenTransaction?
+  removeToken                      RemoveTokenTransaction?
 
   @@index([confirmed])
   // @@index([lastCheckedAt])
@@ -96,6 +98,16 @@ model CreateNewTokenTransaction {
   comment        String
   organization   Organization @relation(fields: [organizationId], references: [id])
   transaction    Transaction  @relation(fields: [id], references: [id])
+}
+
+model RemoveTokenTransaction {
+  id             Int          @id @default(autoincrement())
+  organizationId Int
+  tokenId        Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  transaction    Transaction  @relation(fields: [id], references: [id])
+
+  @@index([organizationId, tokenId])
 }
 
 model AddExistingTokenTransaction {
