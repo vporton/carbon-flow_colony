@@ -136,7 +136,7 @@ model SetTaxTransaction {
   tax            String
   transaction    Transaction @relation(fields: [id], references: [id])
 
-  @@index([organizationId, tokenId])
+  @@index([tokenId])
 }
 
 // TODO: `AddExistingOrganizationTransaction`
