@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from "@mui/material";
 import { ethers } from "ethers";
 import { useState } from "react";

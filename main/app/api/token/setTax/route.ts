@@ -15,30 +15,31 @@ export function POST(req: Request) {
         const {
             tokenId, tax,
         }: {
-            tokenId: number, tax: string,
+            tokenId: number, tax: number,
         } = j;
     
         const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi);
         const action = await contract.populateTransaction.setTax(tokenId, tax);
         const serializedAction = ethers.utils.serializeTransaction(action);
         const colony = await colonyNetwork.getColony(await bufferToEthAddress(colonyAddress));
-        const tx = await colony.makeArbitraryTransaction(
+        const [tx, _mined] = await colony.makeArbitraryTransaction(
             carbonTokenAddress, // TODO
             serializedAction,
         ).metaMotion().send();
-        const txHash = ethers.utils.keccak256(await tx.encode());
-        txsDisplay.onSubmitted(txHash, "create token");
+        // TODO: Token comment in the annotation.
+        await colony.annotateTransaction(tx.hash, `Set token #${tokenId} tax to ${tax*100}%`).metaMotion().send();
+        txsDisplay.onSubmitted(tx.hash, "Set tax");
 
         const prisma = new PrismaClient();
         // TODO: database transaction
         const dbTrans = await prisma.transaction.create({data: {
-            tx: ethHashToBuffer(txHash),
+            tx: ethHashToBuffer(tx.hash),
             kind: TransactionKind.CREATE_TOKEN,
         }});
-        await prisma.createNewTokenTransaction.create({data: {
+        await prisma.setTaxTransaction.create({data: {
             id: dbTrans.id,
-            organizationId,
-            comment,
+            tokenId,
+            tax,
         }});
     }
     doIt().then(() => {});

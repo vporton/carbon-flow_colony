@@ -1,3 +1,5 @@
+'use client';
+
 import { PrismaClient } from "@prisma/client";
 import OrganizationInside from "@/../main/components/OrganizationInside";
 import Carbon from "@porton/carbon-flow/artifacts/contracts/Carbon.sol/Carbon.json";
@@ -28,7 +30,7 @@ export default function Organization({
       prisma.organizationsTokens.findMany({
           select: {token: { select: { id: true } }, comment: true},
           where: { organizationId: { equals: id } },
-      }).then(async tokens0 => {
+      }).then(async (tokens0: {token: {id: number}, comment: string}[]) => {
         const contract = new ethers.Contract(carbonTokenAddress, Carbon.abi);
         const tokens1 = tokens0.map(t => ({
           id: t.token.id,
@@ -46,7 +48,7 @@ export default function Organization({
       prisma.organization.findFirstOrThrow({
         select: { name: true, colonyNickName: true, colonyAddress: true },
         where: { id },
-      }).then((colonyInfo) => setColonyInfo(colonyInfo));
+      }).then((colonyInfo: {name: string; colonyNickName: string}) => setColonyInfo(colonyInfo));
     });
 
     function unjoinOrganization() {
