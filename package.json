@@ -13,7 +13,7 @@
     "lint:next": "cd main && next lint",
     "build:worker": "cd worker && esbuild src/worker.ts --platform=node --bundle --minify --outfile=dist/worker.js --sourcemap  ",
     "start:worker": "yarn run build:worker && node --require dotenv/config worker/dist/worker.js",
-    "dev:worker": "yarn run build:worker && nodemon --require dotenv/config worker/dist/worker.js",
+    "dev:worker": "tsx worker/src/worker.ts",
     "lint:worker": "cd worker && eslint"
   },
   "dependencies": {

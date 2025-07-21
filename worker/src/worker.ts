@@ -1,11 +1,11 @@
-import { colonyNetwork, ethProvider } from "@/../util/serverSideEthConnect";
+import { colonyNetwork, ethProvider } from "@/../../util/serverSideEthConnect";
 import { ColonyEventManager, ColonyNetwork, ColonyRpcEndpoint, Network } from "@colony/sdk";
 import { getColonyNetworkClient } from '@colony/colony-js'; // TODO: Remove `@colony/colony-js` dependency.
 import { PrismaClient } from "@prisma/client";
 import { IColonyEvents__factory as ColonyEventsFactory } from '@colony/events';
 import { ethers } from "ethers";
-import { TransactionKind } from "@/../util/transactionKinds";
-import { bufferToEthHash, ethAddressToBuffer, ethHashToBuffer } from "@/../util/eth";
+import { TransactionKind } from "@/../../util/transactionKinds";
+import { bufferToEthHash, ethAddressToBuffer, ethHashToBuffer } from "@/../../util/eth";
 import Semaphore from "@chriscdn/promise-semaphore";
 
 import express, { Express, Request, Response } from "express";
