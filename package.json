@@ -23,6 +23,7 @@
     "@mui/material": "^7.2.0",
     "@porton/carbon-flow": "git+https://github.com/vporton/carbon-flow.git#main",
     "@prisma/client": "^6.12.0",
+    "@tailwindcss/postcss": "^4.1.12",
     "@tanstack/react-query": "^5.83.0",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
